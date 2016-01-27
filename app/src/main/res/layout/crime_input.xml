@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Enter any criminal activity that has occured in your neighborhood in the form below."
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="59dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:text="County"
+        android:id="@+id/county"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/countySpinner"
+        >
+    </Spinner>
+
+    <TextView
+        android:layout_width="59dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:text="Area"
+        android:id="@+id/area"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/areaSpinner"
+        >
+    </Spinner>
+
+    <TextView
+        android:layout_width="59dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:text="Location"
+        android:id="@+id/location"/>
+
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/locationText" />
+
+    <TextView
+        android:layout_width="59dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:text="Crime"
+        android:id="@+id/crime"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/crimeSpinner"
+        >
+    </Spinner>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        android:id="@+id/add"
+        android:onClick="addItem"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="59dp"
+        android:layout_height="28dp"
+        android:layout_alignParentLeft="true"
+        android:text="Date"
+        android:id="@+id/date"/>
+
+    <DatePicker
+        android:layout_width="250dp"
+        android:layout_height="match_parent"
+        android:id="@+id/datePicker" />
+
+
+</LinearLayout>

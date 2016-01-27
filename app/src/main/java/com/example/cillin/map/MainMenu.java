@@ -1,19 +1,25 @@
 package com.example.cillin.map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import com.microsoft.windowsazure.mobileservices.*;
+
+import java.net.MalformedURLException;
 
 /**
  * Created by Cillin on 22/01/2016.
  */
 public class MainMenu extends Activity
 {
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -51,7 +57,9 @@ public class MainMenu extends Activity
                     case 0:  Intent firstActivity = new Intent(MainMenu.this, MapsActivity.class);
                         startActivity(firstActivity);
                         break;
-                    //case 1: Intent secondActivity = new Intent(MainMenu.this, );
+                    case 1:  Intent secondActivity = new Intent(MainMenu.this, CrimeInput.class);
+                        startActivity(secondActivity);
+                        break;
 
                 }
             }

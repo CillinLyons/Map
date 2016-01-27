@@ -2,4 +2,53 @@
     <string name="app_name">Map</string>
     <string name="title_activity_maps">Map</string>
     <string name="MainMenu">Menu</string>
+
+    //Counties Array
+    <string-array name="counties_array">
+        <item>Carlow</item>
+        <item>Cavan</item>
+        <item>Clare</item>
+        <item>Cork</item>
+        <item>Donegal</item>
+        <item>Dublin</item>
+        <item>Galway</item>
+        <item>Kerry</item>
+        <item>Kildare</item>
+        <item>Kilkenny</item>
+        <item>Laois</item>
+        <item>Leitrim</item>
+        <item>Limerick</item>
+        <item>Longford</item>
+        <item>Louth</item>
+        <item>Mayo</item>
+        <item>Meath</item>
+        <item>Monaghan</item>
+        <item>Offaly</item>
+        <item>Roscommon</item>
+        <item>Sligo</item>
+        <item>Tipperary</item>
+        <item>Waterford</item>
+        <item>Westmeath</item>
+        <item>Wexford</item>
+        <item>Wicklow</item>
+    </string-array>
+
+    //Compass area's
+    <string-array name="area_array">
+        <item>Center</item>
+        <item>East</item>
+        <item>North</item>
+        <item>South</item>
+        <item>West</item>
+        </string-array>
+
+    //Crimes
+    <string-array name="crime_array">
+        <item>Assault</item>
+        <item>Burglary</item>
+        <item>Criminal Damage</item>
+        <item>Drug offence</item>
+        <item>Sexual offence</item>
+        <item>Theft</item>
+    </string-array>
 </resources>

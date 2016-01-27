@@ -1,0 +1,348 @@
+package com.example.cillin.map;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.support.v4.app.DialogFragment;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.microsoft.windowsazure.mobileservices.*;
+import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
+import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
+import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
+import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
+import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
+import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
+
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+/**
+ * Created by Cillin on 24/01/2016.
+ */
+public class CrimeInput extends  Activity
+{
+    private MobileServiceClient mClient;
+    /**
+     * Mobile Service Table used to access data
+     */
+    private MobileServiceTable<Crime> mToDoTable;
+
+    /**
+     * EditText containing the "New To Do" text
+     */
+    private EditText locationTextVar;
+    private Spinner crimeSpinnerVar;
+    private Spinner countySpinnerVar;
+    private Spinner areaSpinnerVar;
+
+    /**
+     * Progress spinner to use for table operations
+     */
+    private ProgressBar mProgressBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.crime_input);
+
+        //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
+
+        // Initialize the progress bar
+        //mProgressBar.setVisibility(ProgressBar.GONE);
+
+        try {
+            // Create the Mobile Service Client instance, using the provided
+
+            // Mobile Service URL and key
+            mClient = new MobileServiceClient(
+                    "https://smartneighborhoodwatch.azure-mobile.net/",
+                    "iYkvhkWHEsIcBuVkpBqznTqhFQhxOp89",
+                    this).withFilter(new ProgressFilter());
+
+            // Get the Mobile Service Table instance to use
+            mToDoTable = mClient.getTable(Crime.class);
+
+
+            //Init local storage
+            initLocalStore().get();
+
+
+        }
+        catch (MalformedURLException e) {
+            createAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
+        }
+        catch (Exception e) {
+            createAndShowDialog(e, "Error");
+        }
+
+        crimeSpinnerVar = (Spinner) findViewById(R.id.crimeSpinner);
+        countySpinnerVar = (Spinner) findViewById(R.id.countySpinner);
+        areaSpinnerVar = (Spinner) findViewById(R.id.areaSpinner);
+        locationTextVar = (EditText) findViewById(R.id.locationText);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> crime_adapter = ArrayAdapter.createFromResource(this,
+                R.array.crime_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        crime_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        crimeSpinnerVar.setAdapter(crime_adapter);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> counties_adapter = ArrayAdapter.createFromResource(this,
+                R.array.counties_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        counties_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        countySpinnerVar.setAdapter(counties_adapter);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> area_adapter = ArrayAdapter.createFromResource(this,
+                R.array.area_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        areaSpinnerVar.setAdapter(area_adapter);
+    }
+
+
+    /**
+     * Initializes the activity menu
+     */
+    /*@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.crime_input, menu);
+        return true;
+    }*/
+
+    /**
+     * Add a new item
+     *
+     * @param view The view that originated the call
+     */
+    public void addItem(View view) {
+        if (mClient == null) {
+            return;
+        }
+
+        // Create a new item
+        final Crime crime = new Crime();
+
+
+        crime.setCounty(countySpinnerVar.toString());
+        crime.setComplete(false);
+        crime.setCompass(areaSpinnerVar.toString());
+        crime.setComplete(false);
+        crime.setArea(locationTextVar.getText().toString());
+        crime.setComplete(false);
+        crime.setCrime(crimeSpinnerVar.toString());
+        crime.setComplete(false);
+
+        // Insert the new item
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    final Crime entity = addItemInTable(crime);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!entity.isComplete()) {
+                                mToDoTable.insert(entity);
+                            }
+                        }
+                    });
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+                return null;
+            }
+        };
+
+        runAsyncTask(task);
+
+        locationTextVar.setText("");
+    }
+
+    /**
+     * Add an item to the Mobile Service Table
+     */
+    public Crime addItemInTable(Crime item) throws ExecutionException, InterruptedException {
+        Crime entity = mToDoTable.insert(item).get();
+        return entity;
+    }
+
+    /**
+     * Initialize local storage
+     * @return
+     * @throws MobileServiceLocalStoreException
+     * @throws ExecutionException
+     * @throws InterruptedException
+     */
+    private AsyncTask<Void, Void, Void> initLocalStore() throws MobileServiceLocalStoreException, ExecutionException, InterruptedException {
+
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+
+                    MobileServiceSyncContext syncContext = mClient.getSyncContext();
+
+                    if (syncContext.isInitialized())
+                        return null;
+
+                    SQLiteLocalStore localStore = new SQLiteLocalStore(mClient.getContext(), "OfflineStore", null, 1);
+
+                    Map<String, ColumnDataType> tableDefinition = new HashMap<String, ColumnDataType>();
+                    tableDefinition.put("id", ColumnDataType.String);
+                    tableDefinition.put("county", ColumnDataType.String);
+                    tableDefinition.put("compass", ColumnDataType.String);
+                    tableDefinition.put("area", ColumnDataType.String);
+                    tableDefinition.put("crime", ColumnDataType.String);
+                    tableDefinition.put("complete", ColumnDataType.Boolean);
+
+                    localStore.defineTable("Crime", tableDefinition);
+
+                    SimpleSyncHandler handler = new SimpleSyncHandler();
+
+                    syncContext.initialize(localStore, handler).get();
+
+                } catch (final Exception e) {
+                    createAndShowDialogFromTask(e, "Error");
+                }
+
+                return null;
+            }
+        };
+
+        return runAsyncTask(task);
+    }
+
+    /**
+     * Creates a dialog and shows it
+     *
+     * @param exception
+     *            The exception to show in the dialog
+     * @param title
+     *            The dialog title
+     */
+    private void createAndShowDialogFromTask(final Exception exception, String title) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                createAndShowDialog(exception, "Error");
+            }
+        });
+    }
+
+
+    /**
+     * Creates a dialog and shows it
+     *
+     * @param exception
+     *            The exception to show in the dialog
+     * @param title
+     *            The dialog title
+     */
+    private void createAndShowDialog(Exception exception, String title) {
+        Throwable ex = exception;
+        if(exception.getCause() != null){
+            ex = exception.getCause();
+        }
+        createAndShowDialog(ex.getMessage(), title);
+    }
+
+    /**
+     * Creates a dialog and shows it
+     *
+     * @param message
+     *            The dialog message
+     * @param title
+     *            The dialog title
+     */
+    private void createAndShowDialog(final String message, final String title) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.create().show();
+    }
+
+    /**
+     * Run an ASync task on the corresponding executor
+     * @param task
+     * @return
+     */
+    private AsyncTask<Void, Void, Void> runAsyncTask(AsyncTask<Void, Void, Void> task) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            return task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            return task.execute();
+        }
+    }
+
+    private class ProgressFilter implements ServiceFilter {
+
+        @Override
+        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
+
+            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
+
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                }
+            });
+
+            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
+
+            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
+                @Override
+                public void onFailure(Throwable e) {
+                    resultFuture.setException(e);
+                }
+
+                @Override
+                public void onSuccess(ServiceFilterResponse response) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.GONE);
+                        }
+                    });
+
+                    resultFuture.set(response);
+                }
+            });
+
+            return resultFuture;
+        }
+    }
+
+}
