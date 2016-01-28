@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+    <TextView
+        android:layout_weight="60"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="First Name"
+        android:id="@+id/firstname" />
+
+        <EditText
+        android:layout_weight="30"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editFirst"
+        android:layout_gravity="right" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <TextView
+            android:layout_width="105dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Last Name"
+            android:id="@+id/lastname" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/editLast"
+            android:layout_weight="30"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <TextView
+            android:layout_weight="70"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Email"
+            android:id="@+id/email" />
+        <EditText
+            android:layout_weight="30"
+            android:layout_width="fill_parent"
+            android:inputType="textEmailAddress"
+            android:layout_height="wrap_content"
+            android:id="@+id/editEmail"
+            android:layout_gravity="right" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <TextView
+            android:layout_weight="70"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Neighborhood"
+            android:id="@+id/neighborhood" />
+        <EditText
+            android:layout_weight="30"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/editNeighborhood" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <TextView
+            android:layout_weight="70"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Membership Type"
+            android:id="@+id/membership" />
+        <Spinner
+            android:layout_weight="30"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/membershipSpinner"
+            >
+        </Spinner>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <TextView
+            android:layout_weight="70"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Password"
+            android:id="@+id/password" />
+        <EditText
+            android:layout_weight="30"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/editPassword"
+            android:inputType="textPassword"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="100">
+        <TextView
+            android:layout_weight="70"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Confirm Password"
+            android:id="@+id/confirmpassword" />
+        <EditText
+            android:layout_weight="30"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/editConPassword"
+            android:inputType="textPassword"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:id="@+id/register"
+        android:onClick=""
+        android:layout_gravity="center_horizontal"
+        />
+
+    <TextView
+        android:layout_width="74dp"
+        android:layout_height="wrap_content"
+        android:text="Sign In"
+        android:id="@+id/signin"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

@@ -51,4 +51,17 @@
         <item>Sexual offence</item>
         <item>Theft</item>
     </string-array>
+
+    //Times of the day
+    <string-array name="time_array">
+        <item>Morning</item>
+        <item>Afternoon</item>
+        <item>Evening</item>
+        <item>Night</item>
+    </string-array>
+
+    <string-array name="membership_array">
+        <item>Leader</item>
+        <item>Member</item>
+        </string-array>>
 </resources>

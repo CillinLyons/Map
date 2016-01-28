@@ -2,6 +2,7 @@ package com.example.cillin.map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,10 +10,12 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.support.v4.app.DialogFragment;
+
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -32,7 +35,12 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLoc
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 
 import java.net.MalformedURLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -54,6 +62,10 @@ public class CrimeInput extends  Activity
     private Spinner crimeSpinnerVar;
     private Spinner countySpinnerVar;
     private Spinner areaSpinnerVar;
+    private Spinner timeSpinnerVar;
+    //private DatePicker datePickerVar;
+    private EditText dateTextVar;
+
 
     /**
      * Progress spinner to use for table operations
@@ -99,6 +111,8 @@ public class CrimeInput extends  Activity
         countySpinnerVar = (Spinner) findViewById(R.id.countySpinner);
         areaSpinnerVar = (Spinner) findViewById(R.id.areaSpinner);
         locationTextVar = (EditText) findViewById(R.id.locationText);
+        timeSpinnerVar = (Spinner) findViewById(R.id.timeSpinner);
+        dateTextVar = (EditText) findViewById(R.id.dateText);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> crime_adapter = ArrayAdapter.createFromResource(this,
@@ -107,6 +121,8 @@ public class CrimeInput extends  Activity
         crime_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         crimeSpinnerVar.setAdapter(crime_adapter);
+        //crimeSpinnerVar.setOnItemSelectedListener(new AdapterView.OnItemClickListener());
+
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> counties_adapter = ArrayAdapter.createFromResource(this,
@@ -123,23 +139,38 @@ public class CrimeInput extends  Activity
         area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         areaSpinnerVar.setAdapter(area_adapter);
+
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> time_adapter = ArrayAdapter.createFromResource(this,
+                R.array.time_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        time_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        timeSpinnerVar.setAdapter(time_adapter);
     }
-
-
-    /**
-     * Initializes the activity menu
-     */
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.crime_input, menu);
-        return true;
-    }*/
 
     /**
      * Add a new item
      *
      * @param view The view that originated the call
+     *
      */
+
+    /*public  void onDateSet(DatePicker view,int year,int monthOfYear, int dayOfMonth) {
+        dateTime.set(year,monthOfYear,dayOfMonth);
+
+        int Year = year;   // Here you can get day,month and year.
+        int month = monthOfYear;
+        int day = dayOfMonth;
+
+        ContentValues values = new ContentValues();
+
+        values.put("Day",dayOfMonth);
+        values.put("Month",monthOfYear);
+        values.put("Year",year);
+
+    }*/
+
     public void addItem(View view) {
         if (mClient == null) {
             return;
@@ -149,14 +180,30 @@ public class CrimeInput extends  Activity
         final Crime crime = new Crime();
 
 
-        crime.setCounty(countySpinnerVar.toString());
+        crime.setCounty(countySpinnerVar.getSelectedItem().toString());
         crime.setComplete(false);
-        crime.setCompass(areaSpinnerVar.toString());
+        crime.setCompass(areaSpinnerVar.getSelectedItem().toString());
         crime.setComplete(false);
         crime.setArea(locationTextVar.getText().toString());
         crime.setComplete(false);
-        crime.setCrime(crimeSpinnerVar.toString());
+        crime.setCrime(crimeSpinnerVar.getSelectedItem().toString());
         crime.setComplete(false);
+        crime.setTime(timeSpinnerVar.getSelectedItem().toString());
+        crime.setComplete(true);
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM");
+            //String dt = sdf.format(dateTextVar.getText().toString());
+            //String bluh = dateTextVar.getText().toString();
+            Date date = sdf.parse(dateTextVar.getText().toString());
+            crime.setDate(date);
+            crime.setComplete(false);
+        }
+        catch (Exception e)
+        {
+
+        }
+
 
         // Insert the new item
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
@@ -184,6 +231,7 @@ public class CrimeInput extends  Activity
         runAsyncTask(task);
 
         locationTextVar.setText("");
+        dateTextVar.setText("");
     }
 
     /**
@@ -221,6 +269,8 @@ public class CrimeInput extends  Activity
                     tableDefinition.put("compass", ColumnDataType.String);
                     tableDefinition.put("area", ColumnDataType.String);
                     tableDefinition.put("crime", ColumnDataType.String);
+                    tableDefinition.put("time", ColumnDataType.String);
+                    tableDefinition.put("date", ColumnDataType.String);
                     tableDefinition.put("complete", ColumnDataType.Boolean);
 
                     localStore.defineTable("Crime", tableDefinition);

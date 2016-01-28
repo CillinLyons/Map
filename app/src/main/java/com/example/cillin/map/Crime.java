@@ -1,5 +1,14 @@
 package com.example.cillin.map;
 
+import android.content.ContentValues;
+import android.widget.DatePicker;
+
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+
 /**
  * Created by Cillin on 27/01/2016.
  */
@@ -29,6 +38,18 @@ public class Crime
     @com.google.gson.annotations.SerializedName("crime")
     private String mCrime;
 
+    /**
+     * Item time
+     */
+    @com.google.gson.annotations.SerializedName("time")
+    private String mTime;
+
+    /**
+     * Item time
+     */
+    @com.google.gson.annotations.SerializedName("date")
+    private Date mDate;
+
 
     /**
      * Item Id
@@ -57,11 +78,13 @@ public class Crime
     /**
      * Initializes a new ToDoItem
      */
-    public Crime(String county, String compass, String area, String crime, String id) {
+    public Crime(String county, String compass, String area, String crime, String time, String date, String id) {
         this.setCounty(county);
         this.setCompass(compass);
         this.setArea(area);
         this.setCrime(crime);
+        this.setCrime(time);
+        this.setCrime(date);
         this.setId(id);
     }
 
@@ -91,17 +114,27 @@ public class Crime
         mCounty = county;
     }
 
-    public final void setCompass(String compass) {
-        mCompass = compass;
-    }
+    public final void setCompass(String compass) {mCompass = compass;}
 
-    public final void setArea(String area) {
-        mArea = area;
-    }
+    public final void setArea(String area) {mArea = area;}
 
-    public final void setCrime(String crime) {
-        mCrime = crime;
-    }
+    public final void setCrime(String crime) {mCrime = crime;}
+
+    public final void setTime(String time) {mTime = time;}
+
+    public final void setDate(Date date) {mDate = date;}
+
+
+   /*public final void getDateTime(Date date)
+    {
+        /*SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd", Locale.getDefault());
+        //java.util.Date date = mDate;
+        mDate = date;
+        dateFormat.format(date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = sdf.parse(dob.getText());
+    }*/
 
     /**
      * Returns the item id
