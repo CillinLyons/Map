@@ -237,7 +237,8 @@ public class CrimeInput extends  Activity
     /**
      * Add an item to the Mobile Service Table
      */
-    public Crime addItemInTable(Crime item) throws ExecutionException, InterruptedException {
+    public Crime addItemInTable(Crime item) throws ExecutionException, InterruptedException
+    {
         Crime entity = mToDoTable.insert(item).get();
         return entity;
     }
