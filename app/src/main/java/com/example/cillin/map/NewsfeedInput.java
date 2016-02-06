@@ -43,28 +43,24 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 /**
- * Created by Cillin on 24/01/2016.
+ * Created by Cillin on 05/02/2016.
  */
-public class CrimeInput extends  Activity
+public class NewsfeedInput extends  Activity
 {
     private MobileServiceClient mClient;
     /**
      * Mobile Service Table used to access data
      */
-    private MobileServiceTable<Crime> mToDoTable;
+    private MobileServiceTable<NewsfeedItems> mToDoTable;
 
     /**
      * EditText containing the "New To Do" text
      */
-    private EditText locationTextVar;
-    private Spinner crimeSpinnerVar;
-    private Spinner countySpinnerVar;
-    private Spinner areaSpinnerVar;
-    private Spinner timeSpinnerVar;
-    //private DatePicker datePickerVar;
-    private EditText dateTextVar;
+    private EditText mUsername;
+    private EditText mMembership;
+    private EditText mArea;
+    private EditText mMessage;
 
 
     /**
@@ -75,7 +71,7 @@ public class CrimeInput extends  Activity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.crime_input);
+        setContentView(R.layout.newsfeed_input);
 
         //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 
@@ -92,11 +88,11 @@ public class CrimeInput extends  Activity
                     this).withFilter(new ProgressFilter());
 
             // Get the Mobile Service Table instance to use
-            mToDoTable = mClient.getTable(Crime.class);
+            mToDoTable = mClient.getTable(NewsfeedItems.class);
 
 
             //Init local storage
-            initLocalStore().get();
+            //initLocalStore().get();
 
 
         }
@@ -107,69 +103,12 @@ public class CrimeInput extends  Activity
             createAndShowDialog(e, "Error");
         }
 
-        crimeSpinnerVar = (Spinner) findViewById(R.id.crimeSpinner);
-        countySpinnerVar = (Spinner) findViewById(R.id.countySpinner);
-        areaSpinnerVar = (Spinner) findViewById(R.id.areaSpinner);
-        locationTextVar = (EditText) findViewById(R.id.locationText);
-        timeSpinnerVar = (Spinner) findViewById(R.id.timeSpinner);
-        dateTextVar = (EditText) findViewById(R.id.dateText);
+        mUsername = (EditText) findViewById(R.id.editUsername);
+        mMembership = (EditText) findViewById(R.id.editMembership);
+        mArea = (EditText) findViewById(R.id.editArea);
+        mMessage = (EditText) findViewById(R.id.editMessage);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> crime_adapter = ArrayAdapter.createFromResource(this,
-                R.array.crime_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        crime_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        crimeSpinnerVar.setAdapter(crime_adapter);
-        //crimeSpinnerVar.setOnItemSelectedListener(new AdapterView.OnItemClickListener());
-
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> counties_adapter = ArrayAdapter.createFromResource(this,
-                R.array.counties_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        counties_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        countySpinnerVar.setAdapter(counties_adapter);
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> area_adapter = ArrayAdapter.createFromResource(this,
-                R.array.area_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        areaSpinnerVar.setAdapter(area_adapter);
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> time_adapter = ArrayAdapter.createFromResource(this,
-                R.array.time_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        time_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        timeSpinnerVar.setAdapter(time_adapter);
     }
-
-    /**
-     * Add a new item
-     *
-     * @param view The view that originated the call
-     *
-     */
-
-    /*public  void onDateSet(DatePicker view,int year,int monthOfYear, int dayOfMonth) {
-        dateTime.set(year,monthOfYear,dayOfMonth);
-
-        int Year = year;   // Here you can get day,month and year.
-        int month = monthOfYear;
-        int day = dayOfMonth;
-
-        ContentValues values = new ContentValues();
-
-        values.put("Day",dayOfMonth);
-        values.put("Month",monthOfYear);
-        values.put("Year",year);
-
-    }*/
 
     public void addItem(View view) {
         if (mClient == null) {
@@ -177,33 +116,18 @@ public class CrimeInput extends  Activity
         }
 
         // Create a new item
-        final Crime crime = new Crime();
+        final NewsfeedItems crime = new NewsfeedItems();
 
 
-        crime.setCounty(countySpinnerVar.getSelectedItem().toString());
-        crime.setComplete(false);
-        crime.setCompass(areaSpinnerVar.getSelectedItem().toString());
-        crime.setComplete(false);
-        crime.setArea(locationTextVar.getText().toString());
-        crime.setComplete(false);
-        crime.setCrime(crimeSpinnerVar.getSelectedItem().toString());
-        crime.setComplete(false);
-        crime.setTime(timeSpinnerVar.getSelectedItem().toString());
-        crime.setComplete(true);
 
-        try
-        {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM");
-            //String dt = sdf.format(dateTextVar.getText().toString());
-            //String bluh = dateTextVar.getText().toString();
-            Date date = sdf.parse(dateTextVar.getText().toString());
-            crime.setDate(date);
-            crime.setComplete(false);
-        }
-        catch (Exception e)
-        {
-
-        }
+        crime.setUsername(mUsername.getText().toString());
+        crime.setMembership(mMembership.getText().toString());
+        crime.setArea(mArea.getText().toString());
+        crime.setMessage(mMessage.getText().toString());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        dateFormat.format(date);
+        crime.setDate(date);
 
 
         // Insert the new item
@@ -212,14 +136,13 @@ public class CrimeInput extends  Activity
             protected Void doInBackground(Void... params) {
                 try {
 
-                    final Crime entity = addItemInTable(crime);
+                    final NewsfeedItems entity = addItemInTable(crime);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!entity.isComplete()) {
                                 mToDoTable.insert(entity);
-                            }
+
                         }
                     });
                 }
@@ -231,17 +154,14 @@ public class CrimeInput extends  Activity
         };
 
         runAsyncTask(task);
-
-        locationTextVar.setText("");
-        dateTextVar.setText("");
     }
 
     /**
      * Add an item to the Mobile Service Table
      */
-    public Crime addItemInTable(Crime item) throws ExecutionException, InterruptedException
+    public NewsfeedItems addItemInTable(NewsfeedItems item) throws ExecutionException, InterruptedException
     {
-        Crime entity = mToDoTable.insert(item).get();
+        NewsfeedItems entity = mToDoTable.insert(item).get();
         return entity;
     }
 
@@ -252,7 +172,7 @@ public class CrimeInput extends  Activity
      * @throws ExecutionException
      * @throws InterruptedException
      */
-    private AsyncTask<Void, Void, Void> initLocalStore() throws MobileServiceLocalStoreException, ExecutionException, InterruptedException {
+   /* private AsyncTask<Void, Void, Void> initLocalStore() throws MobileServiceLocalStoreException, ExecutionException, InterruptedException {
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -291,7 +211,7 @@ public class CrimeInput extends  Activity
         };
 
         return runAsyncTask(task);
-    }
+    }*/
 
     /**
      * Creates a dialog and shows it

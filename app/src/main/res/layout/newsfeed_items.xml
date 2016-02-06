@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/DBusername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username" />
+
+    <TextView
+        android:id="@+id/DBmembership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Membership"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/DBusername" />
+
+    <TextView
+        android:id="@+id/DBarea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="area"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/DBmembership" />
+
+    <TextView
+        android:id="@+id/DBmessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="message"
+        android:layout_below="@+id/DBusername"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:id="@+id/textViewDate"
+        android:layout_below="@+id/DBmessage"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textID"
+        android:text="IDsssssssssssssssssssssss"
+        android:layout_below="@+id/textViewDate"
+        android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>

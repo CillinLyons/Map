@@ -124,18 +124,6 @@ public class Crime
 
     public final void setDate(Date date) {mDate = date;}
 
-
-   /*public final void getDateTime(Date date)
-    {
-        /*SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd", Locale.getDefault());
-        //java.util.Date date = mDate;
-        mDate = date;
-        dateFormat.format(date);
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = sdf.parse(dob.getText());
-    }*/
-
     /**
      * Returns the item id
      */

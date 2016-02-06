@@ -33,7 +33,7 @@ public class MainMenu extends Activity
     private void populateMenu()
     {
         //Create items for the menu
-        String[] menuItems = {"Map", "Crime Report"};
+        String[] menuItems = {"Map", "Crime Report", "Newsfeed", "NewsfeedInput"};
 
         //Create adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.main_menu_items, menuItems);
@@ -60,7 +60,12 @@ public class MainMenu extends Activity
                     case 1:  Intent secondActivity = new Intent(MainMenu.this, CrimeInput.class);
                         startActivity(secondActivity);
                         break;
-
+                    case 2:  Intent thirdActivity = new Intent(MainMenu.this, Newsfeed.class);
+                        startActivity(thirdActivity);
+                        break;
+                    case 3:  Intent fourthActivity = new Intent(MainMenu.this, NewsfeedInput.class);
+                        startActivity(fourthActivity);
+                        break;
                 }
             }
         });

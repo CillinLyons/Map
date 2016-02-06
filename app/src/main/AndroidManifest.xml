@@ -79,6 +79,14 @@
             android:name=".CustomLoginActivity"
             android:label="Login" >
         </activity>
+        <activity
+            android:name=".Newsfeed"
+            android:label="Login" >
+        </activity>
+        <activity
+            android:name=".NewsfeedInput"
+            android:label="@string/MainMenu" >
+        </activity>
     </application>
 
 </manifest>
