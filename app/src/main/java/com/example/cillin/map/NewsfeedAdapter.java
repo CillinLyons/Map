@@ -57,14 +57,14 @@ public class NewsfeedAdapter extends ArrayAdapter<NewsfeedItems>
         final TextView area = (TextView) row.findViewById(R.id.DBarea);
         final TextView message = (TextView) row.findViewById(R.id.DBmessage);
         final TextView dateVar = (TextView) row.findViewById(R.id.textViewDate);
-        final TextView id = (TextView) row.findViewById(R.id.textID);
+        //final TextView id = (TextView) row.findViewById(R.id.textID);
 
         username.setText(currentItem.getUsername());
         membership.setText(", " + currentItem.getMembership() + ", ");
         area.setText(currentItem.getArea());
         message.setText(currentItem.getMessage());
         dateVar.setText(currentItem.getDate().toString().substring(0, 20));
-        id.setText(currentItem.getID());
+        //id.setText(currentItem.getID());
 
         return row;
     }

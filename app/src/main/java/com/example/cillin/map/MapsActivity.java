@@ -1,6 +1,7 @@
 package com.example.cillin.map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -390,13 +391,23 @@ public class MapsActivity extends Activity
             TextView markerLabel = (TextView)v.findViewById(R.id.marker_label);
 
             TextView anotherLabel = (TextView)v.findViewById(R.id.another_label);
+            anotherLabel.setOnClickListener(newsfeed);
 
             markerIcon.setImageResource(manageMarkerIcon(myMarker.getmIcon()));
-
+            anotherLabel.setText("Newsfeed");
             markerLabel.setText(myMarker.getmLabel());
-            anotherLabel.setText("A custom text");
+
 
             return v;
         }
     }
+    View.OnClickListener newsfeed = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            Intent newsfeedIntent = new Intent(getApplicationContext(), Newsfeed.class);
+            startActivity(newsfeedIntent);
+        }
+    };
 }
