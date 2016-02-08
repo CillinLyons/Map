@@ -126,7 +126,7 @@ public class CrimeInput extends  Activity
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> counties_adapter = ArrayAdapter.createFromResource(this,
-                R.array.counties_array, android.R.layout.simple_spinner_item);
+                R.array.county_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         counties_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -134,7 +134,7 @@ public class CrimeInput extends  Activity
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> area_adapter = ArrayAdapter.createFromResource(this,
-                R.array.area_array, android.R.layout.simple_spinner_item);
+                R.array.location_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner

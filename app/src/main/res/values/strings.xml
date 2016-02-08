@@ -23,7 +23,8 @@
     <string name="test_401_no_retry">Test 401 no Retry</string>
 
     //Counties Array
-    <string-array name="counties_array">
+    <string-array name="county_array">
+        <item>Select County</item>
         <item>Carlow</item>
         <item>Cavan</item>
         <item>Clare</item>
@@ -53,7 +54,8 @@
     </string-array>
 
     //Compass area's
-    <string-array name="area_array">
+    <string-array name="location_array">
+        <item>Select Location</item>
         <item>Center</item>
         <item>East</item>
         <item>North</item>
@@ -63,6 +65,7 @@
 
     //Crimes
     <string-array name="crime_array">
+        <item>Select Crime</item>
         <item>Assault</item>
         <item>Burglary</item>
         <item>Criminal Damage</item>
@@ -73,6 +76,7 @@
 
     //Times of the day
     <string-array name="time_array">
+        <item>Select Time</item>
         <item>Morning</item>
         <item>Afternoon</item>
         <item>Evening</item>
@@ -80,6 +84,7 @@
     </string-array>
 
     <string-array name="membership_array">
+        <item>Select Membership</item>
         <item>Leader</item>
         <item>Member</item>
         </string-array>>

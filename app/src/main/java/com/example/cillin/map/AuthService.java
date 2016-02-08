@@ -94,13 +94,13 @@ public class AuthService {
 
     /**
      * Handles logging in with custom auth
-     * @param username
+     * @param email
      * @param password
      * @param callback
      */
-    public void login(String username, String password, TableJsonOperationCallback callback) {
+    public void login(String email, String password, TableJsonOperationCallback callback) {
         JsonObject customUser = new JsonObject();
-        customUser.addProperty("username", username);
+        customUser.addProperty("email", email);
         customUser.addProperty("password", password);
 
         List<Pair<String,String>> parameters = new ArrayList<Pair<String, String>>();
@@ -180,21 +180,23 @@ public class AuthService {
         preferencesEditor.commit();
     }
 
-    /**
-     * Register the user if they're creating a custom auth account
-     * @param username
-     * @param password
-     * @param confirm
-     * @param email
-     * @param callback
-     */
-    public void registerUser(String username, String password, String confirm,
-                             String email,
+
+    public void registerUser(String firstname, String lastname, String email, String county, String county_location,
+                             String neighbourhood, String membership, int emergency1, int emergency2, int emergency3,
+                             String password, String confirm,
                              TableJsonOperationCallback callback) {
         JsonObject newUser = new JsonObject();
-        newUser.addProperty("username", username);
-        newUser.addProperty("password", password);
+        newUser.addProperty("first_name", firstname);
+        newUser.addProperty("last_name", lastname);
         newUser.addProperty("email", email);
+        newUser.addProperty("county", county);
+        newUser.addProperty("county_location", county_location);
+        newUser.addProperty("neighbourhood", neighbourhood);
+        newUser.addProperty("membership", membership);
+        newUser.addProperty("emergency_contact_one", emergency1);
+        newUser.addProperty("emergency_contact_two", emergency2);
+        newUser.addProperty("emergency_contact_three", emergency3);
+        newUser.addProperty("password", password);
 
         mTableAccounts.insert(newUser, callback);
     }
