@@ -47,9 +47,9 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileSer
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
 
-import static com.google.android.gms.internal.zzid.runOnUiThread;
+//import com.google.android.gms.internal.zzid.runOnUiThread;
 
-public class AuthService {
+public class AuthService extends Activity {
     private MobileServiceClient mClient;
     private MobileServiceJsonTable mTableAccounts;
     private MobileServiceJsonTable mTableAuthData;
@@ -181,14 +181,14 @@ public class AuthService {
     }
 
 
-    public void registerUser(String firstname, String lastname, String email, String county, String county_location,
-                             String neighbourhood, String membership, int emergency1, int emergency2, int emergency3,
-                             String password, String confirm,
+    public void registerUser(String password, String confirm, String email, String firstname, String lastname, String county, String county_location,
+                             String neighbourhood, String membership, long emergency1, long emergency2, long emergency3,
                              TableJsonOperationCallback callback) {
         JsonObject newUser = new JsonObject();
+        newUser.addProperty("password", password);
+        newUser.addProperty("email", email);
         newUser.addProperty("first_name", firstname);
         newUser.addProperty("last_name", lastname);
-        newUser.addProperty("email", email);
         newUser.addProperty("county", county);
         newUser.addProperty("county_location", county_location);
         newUser.addProperty("neighbourhood", neighbourhood);
@@ -196,7 +196,6 @@ public class AuthService {
         newUser.addProperty("emergency_contact_one", emergency1);
         newUser.addProperty("emergency_contact_two", emergency2);
         newUser.addProperty("emergency_contact_three", emergency3);
-        newUser.addProperty("password", password);
 
         mTableAccounts.insert(newUser, callback);
     }

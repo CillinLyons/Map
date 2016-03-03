@@ -61,6 +61,7 @@ public class NewsfeedInput extends  Activity
     private EditText mMembership;
     private EditText mArea;
     private EditText mMessage;
+    private String county;
 
 
     /**
@@ -77,6 +78,18 @@ public class NewsfeedInput extends  Activity
 
         // Initialize the progress bar
         //mProgressBar.setVisibility(ProgressBar.GONE);
+
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                county= null;
+            } else {
+                county= extras.getString("COUNTY");
+            }
+        } else {
+            county= (String) savedInstanceState.getSerializable("COUNTY");
+        }
 
         try {
             // Create the Mobile Service Client instance, using the provided
@@ -128,6 +141,7 @@ public class NewsfeedInput extends  Activity
         Date date = new Date();
         dateFormat.format(date);
         crime.setDate(date);
+        crime.setLocation(county);
 
 
         // Insert the new item

@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:largeHeap="true"
         android:name="AuthenticationApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -84,7 +85,11 @@
             android:label="Login" >
         </activity>
         <activity
-            android:name=".NewsfeedInput"
+        android:name=".NewsfeedInput"
+        android:label="@string/MainMenu" >
+    </activity>
+        <activity
+            android:name=".InfoWindowList"
             android:label="@string/MainMenu" >
         </activity>
     </application>

@@ -21,16 +21,10 @@ public class Crime
     private String mCounty;
 
     /**
-     * Item compass
-     */
-    @com.google.gson.annotations.SerializedName("compass")
-    private String mCompass;
-
-    /**
      * Item area
      */
-    @com.google.gson.annotations.SerializedName("area")
-    private String mArea;
+    @com.google.gson.annotations.SerializedName("neighborhood")
+    private String mNeighborhood;
 
     /**
      * Item crime
@@ -58,12 +52,6 @@ public class Crime
     private String mId;
 
     /**
-     * Indicates if the item is completed
-     */
-    @com.google.gson.annotations.SerializedName("complete")
-    private boolean mComplete;
-
-    /**
      * ToDoItem constructor
      */
     public Crime() {
@@ -78,10 +66,9 @@ public class Crime
     /**
      * Initializes a new ToDoItem
      */
-    public Crime(String county, String compass, String area, String crime, String time, String date, String id) {
+    public Crime(String county, String neighborhood, String crime, String time, String date, String id) {
         this.setCounty(county);
-        this.setCompass(compass);
-        this.setArea(area);
+        this.setNeighborhood(neighborhood);
         this.setCrime(crime);
         this.setCrime(time);
         this.setCrime(date);
@@ -95,12 +82,8 @@ public class Crime
         return mCounty;
     }
 
-    public String getCompass() {
-        return mCompass;
-    }
-
-    public String getArea() {
-        return mArea;
+    public String getNeighborhood() {
+        return mNeighborhood;
     }
 
     public String getCrime() {
@@ -114,9 +97,7 @@ public class Crime
         mCounty = county;
     }
 
-    public final void setCompass(String compass) {mCompass = compass;}
-
-    public final void setArea(String area) {mArea = area;}
+    public final void setNeighborhood(String neighborhood) {mNeighborhood = neighborhood;}
 
     public final void setCrime(String crime) {mCrime = crime;}
 
@@ -136,20 +117,6 @@ public class Crime
      */
     public final void setId(String id) {
         mId = id;
-    }
-
-    /**
-     * Indicates if the item is marked as completed
-     */
-    public boolean isComplete() {
-        return mComplete;
-    }
-
-    /**
-     * Marks the item as completed or incompleted
-     */
-    public void setComplete(boolean complete) {
-        mComplete = complete;
     }
 
     @Override

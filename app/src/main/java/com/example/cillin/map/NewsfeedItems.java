@@ -32,6 +32,9 @@ public class NewsfeedItems
     @com.google.gson.annotations.SerializedName("date")
     private Date mDate;
 
+    @com.google.gson.annotations.SerializedName("location")
+    private String mLocation;
+
     public NewsfeedItems()
     {
 
@@ -67,6 +70,10 @@ public class NewsfeedItems
     {
         return mMessage;
     }
+    public String getLocation()
+    {
+        return mLocation;
+    }
 
     public Date getDate()
     {
@@ -91,7 +98,7 @@ public class NewsfeedItems
     public final void setArea(String area) {mArea = area;}
 
     public final void setMessage(String message) {mMessage = message;}
-
+    public final void setLocation(String location) {mLocation = location;}
     public final void setDate(Date date)
     {
         /*DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");

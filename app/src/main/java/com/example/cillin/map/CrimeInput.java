@@ -3,6 +3,7 @@ package com.example.cillin.map;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,13 +59,13 @@ public class CrimeInput extends  Activity
     /**
      * EditText containing the "New To Do" text
      */
-    private EditText locationTextVar;
     private Spinner crimeSpinnerVar;
-    private Spinner countySpinnerVar;
-    private Spinner areaSpinnerVar;
+    private EditText neighborhood;
+    private String county;
     private Spinner timeSpinnerVar;
     //private DatePicker datePickerVar;
     private EditText dateTextVar;
+    private Activity mActivity;
 
 
     /**
@@ -77,10 +78,23 @@ public class CrimeInput extends  Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.crime_input);
 
+        mActivity = this;
+
         //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
 
         // Initialize the progress bar
         //mProgressBar.setVisibility(ProgressBar.GONE);
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                county= null;
+            } else {
+                county= extras.getString("COUNTY");
+            }
+        } else {
+            county= (String) savedInstanceState.getSerializable("COUNTY");
+        }
 
         try {
             // Create the Mobile Service Client instance, using the provided
@@ -108,11 +122,9 @@ public class CrimeInput extends  Activity
         }
 
         crimeSpinnerVar = (Spinner) findViewById(R.id.crimeSpinner);
-        countySpinnerVar = (Spinner) findViewById(R.id.countySpinner);
-        areaSpinnerVar = (Spinner) findViewById(R.id.areaSpinner);
-        locationTextVar = (EditText) findViewById(R.id.locationText);
         timeSpinnerVar = (Spinner) findViewById(R.id.timeSpinner);
         dateTextVar = (EditText) findViewById(R.id.dateText);
+        neighborhood = (EditText) findViewById(R.id.neighborhoodText);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> crime_adapter = ArrayAdapter.createFromResource(this,
@@ -121,24 +133,6 @@ public class CrimeInput extends  Activity
         crime_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         crimeSpinnerVar.setAdapter(crime_adapter);
-        //crimeSpinnerVar.setOnItemSelectedListener(new AdapterView.OnItemClickListener());
-
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> counties_adapter = ArrayAdapter.createFromResource(this,
-                R.array.county_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        counties_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        countySpinnerVar.setAdapter(counties_adapter);
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> area_adapter = ArrayAdapter.createFromResource(this,
-                R.array.location_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        areaSpinnerVar.setAdapter(area_adapter);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> time_adapter = ArrayAdapter.createFromResource(this,
@@ -180,16 +174,10 @@ public class CrimeInput extends  Activity
         final Crime crime = new Crime();
 
 
-        crime.setCounty(countySpinnerVar.getSelectedItem().toString());
-        crime.setComplete(false);
-        crime.setCompass(areaSpinnerVar.getSelectedItem().toString());
-        crime.setComplete(false);
-        crime.setArea(locationTextVar.getText().toString());
-        crime.setComplete(false);
+        crime.setCounty(county);
+        crime.setNeighborhood(neighborhood.getText().toString());
         crime.setCrime(crimeSpinnerVar.getSelectedItem().toString());
-        crime.setComplete(false);
         crime.setTime(timeSpinnerVar.getSelectedItem().toString());
-        crime.setComplete(true);
 
         try
         {
@@ -198,7 +186,6 @@ public class CrimeInput extends  Activity
             //String bluh = dateTextVar.getText().toString();
             Date date = sdf.parse(dateTextVar.getText().toString());
             crime.setDate(date);
-            crime.setComplete(false);
         }
         catch (Exception e)
         {
@@ -217,9 +204,7 @@ public class CrimeInput extends  Activity
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if (!entity.isComplete()) {
                                 mToDoTable.insert(entity);
-                            }
                         }
                     });
                 }
@@ -231,9 +216,15 @@ public class CrimeInput extends  Activity
         };
 
         runAsyncTask(task);
-
-        locationTextVar.setText("");
+        crimeSpinnerVar.setSelection(0);
+        timeSpinnerVar.setSelection(0);
         dateTextVar.setText("");
+        neighborhood.setText("");
+        mActivity.finish();
+        Intent firstActivity = new Intent(mActivity, InfoWindowList.class);
+        firstActivity.putExtra("COUNTY", county);
+        startActivity(firstActivity);
+
     }
 
     /**

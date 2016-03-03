@@ -21,20 +21,21 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
+import com.microsoft.windowsazure.mobileservices.table.query.ExecutableQuery;
 
 import java.net.MalformedURLException;
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.ExecutionException;
 
 /**
- * Created by Cillin on 03/02/2016.
+ * Created by Cillin on 29/02/2016.
  */
-public class Newsfeed extends Activity
+public class CrimeStats extends Activity
 {
+
+   /* public ExecutableQuery<E> includeInlineCount()
+    {
+      return this.where().includeInlineCount();
+    }*/
+
     /**
      * Mobile Service Client reference
      */
@@ -43,44 +44,39 @@ public class Newsfeed extends Activity
     /**
      * Mobile Service Table used to access data
      */
-    private MobileServiceTable<NewsfeedItems> mToDoTable;
+    private MobileServiceTable<Crime> mToDoTable;
 
-    //Offline Sync
-    /**
-     * Mobile Service Table used to access and Sync data
-     */
 
-    /**
-     * Adapter to sync the items list with the view
-     */
-    private NewsfeedAdapter mAdapter;
+    //Criminal Activities
+    private TextView mAssault;
+    private TextView mBurglary;
+    private TextView mCriminalDamage;
+    private TextView mTheft;
 
-    /**
-     * EditText containing the "New To Do" text
-     */
-    private TextView mUsername;
-    private TextView mMembership;
-    private TextView mArea;
-    private TextView mMessage;
-    private TextView mNewsfeedCounty;
+    //County
+    private String countyString;
+
+    //Most Popular
+    private TextView mCrimeMP;
+    private TextView mAreaMP;
+    private TextView mTimeMP;
+
+    //Least Popular
+    private TextView mCrimeLP;
+    private TextView mAreaLP;
+    private TextView mTimeLP;
     private ImageView mIcon;
-    private ImageView mNHW;
-    private ImageView mSendBtn;
-   // private String county;
 
     /**
      * Progress spinner to use for table operations
      */
     private ProgressBar mProgressBar;
-    private TextView county;
-    private String countyString;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.newsfeed);
-
+        setContentView(R.layout.crime_stats);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -93,11 +89,7 @@ public class Newsfeed extends Activity
             countyString= (String) savedInstanceState.getSerializable("COUNTY");
         }
 
-        county = (TextView)findViewById(R.id.newsfeed_location);
-        county.setText(countyString);
-        mIcon = (ImageView) findViewById(R.id.CountyimageView);
-        mSendBtn = (ImageView) findViewById(R.id.CountyimageView);
-        mSendBtn.setImageResource(R.mipmap.message_btn);
+        mIcon = (ImageView) findViewById(R.id.CountyimageView3);
         ChangeIcon.setIcon(countyString, mIcon);
 
 
@@ -111,21 +103,22 @@ public class Newsfeed extends Activity
                     this).withFilter(new ProgressFilter());
 
 
-            mToDoTable = mClient.getTable(NewsfeedItems.class);
+            mToDoTable = mClient.getTable(Crime.class);
 
             //Init local storage
             //initLocalStore().get();
-            mUsername = (TextView) findViewById(R.id.DBusername);
-            mMembership = (TextView) findViewById(R.id.DBmembership);
-            mArea = (TextView) findViewById(R.id.DBarea);
-            mMessage = (TextView) findViewById(R.id.DBmessage);
+            mAssault = (TextView) findViewById(R.id.AssaultInputtextView);
+            mBurglary = (TextView) findViewById(R.id.BurglaryInputtextView);
+            mCriminalDamage = (TextView) findViewById(R.id.CrimeInputtextView);
+            mTheft = (TextView) findViewById(R.id.TheftInputtextView);
 
-            // Create an adapter to bind the items with the view
-            mAdapter = new NewsfeedAdapter(this, R.layout.newsfeed_items);
-            ListView listViewToDo = (ListView) findViewById(R.id.listViewDB);
-            listViewToDo.setAdapter(mAdapter);
+            mCrimeMP = (TextView) findViewById(R.id.CrimeInput2textView);
+            mAreaMP = (TextView) findViewById(R.id.AssaultInputtextView);
+            mTimeMP = (TextView) findViewById(R.id.TimeInput1textView);
 
-            displayTable();
+            mCrimeLP = (TextView) findViewById(R.id.CrimeInput3textView);
+            mAreaLP = (TextView) findViewById(R.id.AreaInput2textView);
+            mTimeLP = (TextView) findViewById(R.id.TimeInput2textView);
 
         }
         catch (MalformedURLException e)
@@ -138,7 +131,8 @@ public class Newsfeed extends Activity
         }
     }
 
-    public void displayTable()
+
+   /*public void displayTable()
     {
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
 
@@ -148,16 +142,27 @@ public class Newsfeed extends Activity
                     //MyMarker myMarker = mMarkersHashMap.get(marker);
                     //String title = myMarker.getmLabel();
 
-                    final MobileServiceList<NewsfeedItems> result = mToDoTable.where().field("location").eq(countyString).execute().get();
-                                                                              //.orderBy("date", QueryOrder.Descending).execute().get();
+                    //final MobileServiceList<Crime> result = mToDoTable.where("sdcsdc").eq("dsd").execute().get();
+
+
+
+                    //.orderBy("date", QueryOrder.Descending).execute().get();
                     runOnUiThread(new Runnable() {
 
                         @Override
                         public void run() {
-                            mAdapter.clear();
-                            for (NewsfeedItems item : result) {
-                                mAdapter.add(item);
-
+                            mAssault.setText("");
+                            mBurglary.setText("");
+                            mCriminalDamage.setText("");
+                            mTheft.setText("");
+                            mCrimeMP.setText("");
+                            mAreaMP.setText("");
+                            mTimeMP.setText("");
+                            mCrimeLP.setText("");
+                            mAreaLP.setText("");
+                            mTimeLP.setText("");
+                            for (Crime item : result) {
+                                mAssault.setText(item.toString());
                             }
                         }
                     });
@@ -169,7 +174,7 @@ public class Newsfeed extends Activity
                 return null;
             }
         }.execute();
-    }
+    }*/
 
 
     /**
@@ -277,4 +282,3 @@ public class Newsfeed extends Activity
         }
     }
 }
-

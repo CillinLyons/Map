@@ -2,6 +2,11 @@ package com.example.cillin.map;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -12,22 +17,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cillin.map.clustering.ClusterManager;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.SupportMapFragment;
+import android.support.v4.app.FragmentActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.example.cillin.map.clustering.ClusterManager;
+import com.google.android.gms.plus.model.people.Person;
 
 public class MapsActivity extends Activity
 {
@@ -36,10 +53,10 @@ public class MapsActivity extends Activity
     private HashMap<Marker, MyMarker> mMarkersHashMap;
     private static final float DEFAULTZOOM = 150;
     private TextView anotherLabel;
+    private ClusterManager<MyMarker> mClusterManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -67,7 +84,6 @@ public class MapsActivity extends Activity
                 startActivity(newsfeedIntent);
             }
         };*/
-
 
         // Initialize the HashMap for Markers and MyMarker object
         mMarkersHashMap = new HashMap<Marker, MyMarker>();
@@ -271,57 +287,85 @@ public class MapsActivity extends Activity
         mMyMarkersArray.add(new MyMarker("Donegal Central", "Donegal", Double.parseDouble("53.3362355"), Double.parseDouble("-6.270165099999986")));
 
         setUpMap();
+        //mClusterManager.addItems(mMyMarkersArray);
+        //startDemo();
+
+       /* mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                String title = marker.getTitle();
+                Intent newsfeedIntent = new Intent(getApplicationContext(), Newsfeed.class);
+                startActivity(newsfeedIntent);
+            }
+        });
+
+        mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter());*/
+        //mClusterManager = new ClusterManager<MyMarker>(this, mMap);
+        //mMap.setOnCameraChangeListener(mClusterManager);
         plotMarkers(mMyMarkersArray);
+        //mClusterManager = new ClusterManager<MyMarker>(this, mMap);
+        //mMap.setOnCameraChangeListener(mClusterManager);
+        //mClusterManager.addItems(mMyMarkersArray);
     }
 
     private void plotMarkers(ArrayList<MyMarker> markers)
     {
         if(markers.size() > 0)
         {
-            for (MyMarker myMarker : markers) {
-
+            for (final MyMarker myMarker : markers) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(53.2734, -7.778320310000026), 6));
                 // Create user marker with custom icon and other options
+                //Calls the lat and long methods to set the longitude and latitude positions of the markers passed in
                 MarkerOptions markerOption = new MarkerOptions().position(new LatLng(myMarker.getmLatitude(), myMarker.getmLongitude()));
-                markerOption.icon(BitmapDescriptorFactory.fromResource(R.mipmap.currentlocation_icon));
+                //markerOption.icon(BitmapDescriptorFactory.fromResource(R.mipmap.currentlocation_icon));
 
                 Marker currentMarker = mMap.addMarker(markerOption);
+                //Passes markers into hashmap so they can be used by the information window methods
                 mMarkersHashMap.put(currentMarker, myMarker);
+               /* var markerCluster = new MarkerC
+                mMarkersHashMap.put(currentMarker, myMarker);
+
+                mAnimHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        myMarker.setmIcon(mSteamFrames.NextFrame());
+                        mAnimHandler.postDelayed(this, 32);
+                    }
+                });
+
+                ColorMatrix desatMatrix = new ColorMatrix();
+                desatMatrix.setSaturation(areaRating);
+
+                ColorFilter paintColorFilter = new ColorMatrixColorFilter(desatMatrix);
+
+                Paint paint = new Paint();
+                paint.setColorFilter(paintColorFilter);
+
+                Canvas canvas = new Canvas(newImage);
+                canvas.drawBitmap(oldImage, 0, 0, paint);
+
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(newImage)));*/
 
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        String title = marker.getTitle();
-                        Intent newsfeedIntent = new Intent(getApplicationContext(), Newsfeed.class);
-                            startActivity(newsfeedIntent);
+                        Intent ListIntent = new Intent(getApplicationContext(), InfoWindowList.class);
+                        MyMarker myMarker = mMarkersHashMap.get(marker);
+                        String title = myMarker.getmLabel();
+                        ListIntent.putExtra("COUNTY", title);
+                        startActivity(ListIntent);
                     }
                 });
 
                 mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
-                /*mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                    @Override
-                    public View getInfoWindow(Marker marker) {
-                        return null;
-                    }
-
-                    @Override
-                    public View getInfoContents(Marker marker) {
-                        MyMarker myMarker = mMarkersHashMap.get(marker);
-                        // Setting up the infoWindow with current's marker info
-                        infoImage.setImageResource(manageMarkerIcon(myMarker.getmIcon()));
-                        infoMarkerLabel.setText(myMarker.getmLabel());
-                        infoAnotherLabel.setText("Newsfeed");
-                        infoButtonListener.setMarker(marker);
-
-                        // We must call this to set the current marker and infoWindow references
-                        // to the MapWrapperLayout
-                        //mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-                        return infoWindow;
-                    }
-                });*/
             }
         }
     }
 
+
+    protected GoogleMap getMap() {
+        return mMap;
+    }
     private void gotoLocation(double lat, double lng, float zoom)
     {
         LatLng ll = new LatLng(lat, lng);
@@ -329,7 +373,7 @@ public class MapsActivity extends Activity
         mMap.moveCamera(update);
     }
 
-    public void geoLocate(View v) throws IOException
+   /* public void geoLocate(View v) throws IOException
     {
         hideSoftKeyBoard(v);
 
@@ -351,7 +395,7 @@ public class MapsActivity extends Activity
         mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Marker"));
         mMyMarkersArray.add(new MyMarker("Marker", "icon1", lng, lat));
         plotMarkers(mMyMarkersArray);
-    }
+    }*/
 
     private void hideSoftKeyBoard(View v)
     {
@@ -479,6 +523,7 @@ public class MapsActivity extends Activity
             View v  = getLayoutInflater().inflate(R.layout.infowindow_layout, null);
 
             MyMarker myMarker = mMarkersHashMap.get(marker);
+           //MyMarker myMarker = mMyMarkersArray;
 
             ImageView markerIcon = (ImageView) v.findViewById(R.id.marker_icon);
 
@@ -490,7 +535,6 @@ public class MapsActivity extends Activity
             markerIcon.setImageResource(manageMarkerIcon(myMarker.getmIcon()));
             anotherLabel.setText("Newsfeed");
             markerLabel.setText(myMarker.getmLabel());
-
 
             return v;
         }

@@ -18,8 +18,6 @@ import java.net.MalformedURLException;
  */
 public class MainMenu extends Activity
 {
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
