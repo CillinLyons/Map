@@ -1,10 +1,15 @@
 package com.example.cillin.map;
 
+/**
+ * Created by Cillin on 11/03/2016.
+ */
+
 import android.app.Activity;
 import android.app.Application;
 
-public class AuthenticationApplication extends Application {
-   /* private AuthService mAuthService;
+public class NBHAuthenticationApplication extends Application
+{
+    private AuthService mAuthService;
     private Activity mCurrentActivity;
     private NBHAuthService mNBHAuthService;
     private Activity mCurrentNBHActivity;
@@ -41,6 +46,5 @@ public class AuthenticationApplication extends Application {
 
     public Activity getCurrentActivity() {
         return mCurrentNBHActivity;
-    }*/
+    }
 }
-
