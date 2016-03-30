@@ -10,18 +10,20 @@ import java.util.Locale;
 
 
 /**
- * Created by Cillin on 27/01/2016.
+ * The Crime class represents the crime table.
+ * The toString method in this class returns the county value from the crime table.
  */
 public class Crime
 {
     /**
+     * The following are a list of the columns in the crime table.
      * Item county
      */
     @com.google.gson.annotations.SerializedName("county")
     private String mCounty;
 
     /**
-     * Item area
+     * Item neighbourhood
      */
     @com.google.gson.annotations.SerializedName("neighborhood")
     private String mNeighborhood;
@@ -39,11 +41,10 @@ public class Crime
     private String mTime;
 
     /**
-     * Item time
+     * Item date
      */
     @com.google.gson.annotations.SerializedName("date")
     private Date mDate;
-
 
     /**
      * Item Id
@@ -52,68 +53,96 @@ public class Crime
     private String mId;
 
     /**
-     * ToDoItem constructor
+     * Crime constructor
      */
     public Crime() {
 
     }
 
+    /**
+     * toString calls the getCounty function to return the county value
+     * from the crime table
+     */
     @Override
     public String toString() {
         return getCounty();
     }
 
     /**
-     * Initializes a new ToDoItem
+     * Initializes a new Crime
      */
-    public Crime(String county, String neighborhood, String crime, String time, String date, String id) {
+    public Crime(String county, String crime, String time, String date, String neighborhood, String id) {
         this.setCounty(county);
-        this.setNeighborhood(neighborhood);
         this.setCrime(crime);
         this.setCrime(time);
         this.setCrime(date);
+        this.setNeighborhood(neighborhood);
         this.setId(id);
     }
 
     /**
-     * Returns the item text
-     */
-    public String getCounty() {
-        return mCounty;
-    }
-
-    public String getNeighborhood() {
-        return mNeighborhood;
-    }
-
-    public String getCrime() {
-        return mCrime;
-    }
-
-    /**
-
-     */
-    public final void setCounty(String county) {
-        mCounty = county;
-    }
-
-    public final void setNeighborhood(String neighborhood) {mNeighborhood = neighborhood;}
-
-    public final void setCrime(String crime) {mCrime = crime;}
-
-    public final void setTime(String time) {mTime = time;}
-
-    public final void setDate(Date date) {mDate = date;}
-
-    /**
-     * Returns the item id
+     * getId retrieves the id value from crime
      */
     public String getId() {
         return mId;
     }
 
     /**
+     * getCounty retrieves the county value from crime
+     */
+    public String getCounty() {
+        return mCounty;
+    }
 
+    /**
+     * getNeighborhood retrieves the neighborhood value from crime
+     */
+    public String getNeighborhood() {
+        return mNeighborhood;
+    }
+
+    /**
+     * getCrime retrieves the crime value from crime
+     */
+    public String getCrime() {
+        return mCrime;
+    }
+
+    /**
+     * @param county
+     * setCounty can be used to set a value to the county column
+     */
+    public final void setCounty(String county) {
+        mCounty = county;
+    }
+
+    /**
+     * @param neighborhood
+     * setNeighborhood can be used to set a value to the neighborhood column
+     */
+    public final void setNeighborhood(String neighborhood) {mNeighborhood = neighborhood;}
+
+    /**
+     * @param crime
+     * setCrime can be used to set a value to the crime column
+     */
+    public final void setCrime(String crime) {mCrime = crime;}
+
+    /**
+     * @param time
+     * setTime can be used to set a value to the time column
+     */
+    public final void setTime(String time) {mTime = time;}
+
+    /**
+     * @param date
+     * setDate can be used to set a value to the date column
+     */
+    public final void setDate(Date date) {mDate = date;}
+
+    /**
+     * @param id
+     * setId can be used to set a value to the id column
      */
     public final void setId(String id) {
         mId = id;

@@ -11,7 +11,7 @@ public class BaseActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        AuthenticationApplication myApp = (AuthenticationApplication) getApplication();
+        NBHAuthenticationApplication myApp = (NBHAuthenticationApplication) getApplication();
         myApp.setCurrentActivity(this);
         mAuthService = myApp.getAuthService();
     }

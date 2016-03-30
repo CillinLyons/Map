@@ -23,7 +23,7 @@ public class NewsfeedItems
     @com.google.gson.annotations.SerializedName("membership")
     private String mMembership;
 
-    @com.google.gson.annotations.SerializedName("area")
+    @com.google.gson.annotations.SerializedName("neighborhood")
     private String mArea;
 
     @com.google.gson.annotations.SerializedName("message")

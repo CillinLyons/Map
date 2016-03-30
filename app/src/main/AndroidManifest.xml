@@ -14,15 +14,17 @@
     <!-- The following two permissions are not required to use  Google Maps Android API v2, but are recommended. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:largeHeap="true"
-        android:name="AuthenticationApplication"
+        android:name="NBHAuthenticationApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -43,11 +45,6 @@
             
         </activity>
         <activity
-            android:name=".MainMenu"
-            android:label="@string/MainMenu" >
-
-        </activity>
-        <activity
             android:name=".CrimeInput"
             android:label="@string/MainMenu" >
         </activity>
@@ -66,7 +63,8 @@
         </activity>
         <activity
             android:name=".RegisterAccountActivity"
-            android:label="Register" >
+            android:label="Register"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".BaseActivity"
@@ -77,19 +75,66 @@
             android:label="Authentication" >
         </activity>
         <activity
+            android:name=".NBHBaseActivity"
+            android:label="Base" >
+        </activity>
+        <activity
             android:name=".CustomLoginActivity"
-            android:label="Login" >
+            android:label="Login"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
             android:name=".Newsfeed"
-            android:label="Login" >
+            android:label="Login"
+            android:windowSoftInputMode="adjustResize">
         </activity>
         <activity
         android:name=".NewsfeedInput"
         android:label="@string/MainMenu" >
     </activity>
         <activity
-            android:name=".InfoWindowList"
+        android:name=".InfoWindowList"
+        android:label="@string/MainMenu" >
+    </activity>
+        <activity
+            android:name=".CrimeStats"
+            android:label="@string/MainMenu" >
+        </activity>
+        <activity
+        android:name=".GardaRegister"
+        android:label="@string/MainMenu"
+            android:windowSoftInputMode="adjustResize">
+    </activity>
+        <activity
+            android:name=".GardaLoginActivity"
+            android:label="@string/MainMenu"
+            android:windowSoftInputMode="adjustResize|adjustPan">
+        </activity>
+        <activity
+            android:name=".NeighborhoodRegister"
+            android:label="@string/MainMenu"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".NeighborhoodLogin"
+            android:label="@string/MainMenu"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".UserNeighborhoodLogin"
+            android:label="@string/MainMenu"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity
+            android:name=".WelcomePage"
+            android:label="@string/MainMenu" >
+        </activity>
+        <activity
+            android:name=".InformationPager"
+            android:label="@string/MainMenu" >
+        </activity>
+        <activity
+            android:name=".RegisteredNeighborhoods"
             android:label="@string/MainMenu" >
         </activity>
     </application>

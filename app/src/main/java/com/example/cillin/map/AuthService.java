@@ -46,36 +46,52 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDat
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
-
 //import com.google.android.gms.internal.zzid.runOnUiThread;
 
-public class AuthService extends Activity {
+/**
+ * Auth services handles the login, logout, registration and authentication of this app.
+ */
+
+public class AuthService extends Activity
+{
+    //Connection variable to database
     private MobileServiceClient mClient;
+    //Connection variable to Accounts table
     private MobileServiceJsonTable mTableAccounts;
+    //Connection variable to AuthData table
     private MobileServiceJsonTable mTableAuthData;
+    //Connection variable to BadAuth table
     private MobileServiceJsonTable mTableBadAuth;
+    //Variable for AuthService context
     private Context mContext;
+    //Variable for class
     private final String TAG = "AuthService";
     private boolean mShouldRetryAuth;
     private boolean mIsCustomAuthProvider = false;
     private MobileServiceAuthenticationProvider mProvider;
     private ProgressBar mProgressBar;
 
-    public AuthService(Context context) {
+    public AuthService(Context context)
+    {
+        //Setting context variable
         mContext = context;
+
+        //Connecting to the database SmartNeighborhoodWatch
         try {
+            //Setting the connection variable to the connection value given in the Azure portal
             mClient = new MobileServiceClient("https://smartneighborhoodwatch.azure-mobile.net/",
                     "iYkvhkWHEsIcBuVkpBqznTqhFQhxOp89", mContext)
                     .withFilter(new ProgressFilter());
+            //Setting the Accounts table to the accounts variable
             mTableAccounts = mClient.getTable("Accounts");
+            //Setting the AuthData table to the authdata variable
             mTableAuthData = mClient.getTable("AuthData");
+            //Setting the BadAuth table to the badauth variable
             mTableBadAuth = mClient.getTable("BadAuth");
         } catch (MalformedURLException e) {
             Log.e(TAG, "There was an error creating the Mobile Service.  Verify the URL");
         }
     }
-
-
 
     public void setContext(Context context) {
         mClient.setContext(context);
@@ -181,22 +197,15 @@ public class AuthService extends Activity {
     }
 
 
-    public void registerUser(String password, String confirm, String email, String firstname, String lastname, String county, String county_location,
-                             String neighbourhood, String membership, long emergency1, long emergency2, long emergency3,
+    public void registerUser(String password, String confirm, String username,
+                             String neighbourhood, String membership, String email,
                              TableJsonOperationCallback callback) {
         JsonObject newUser = new JsonObject();
         newUser.addProperty("password", password);
-        newUser.addProperty("email", email);
-        newUser.addProperty("first_name", firstname);
-        newUser.addProperty("last_name", lastname);
-        newUser.addProperty("county", county);
-        newUser.addProperty("county_location", county_location);
+        newUser.addProperty("username", username);
         newUser.addProperty("neighbourhood", neighbourhood);
         newUser.addProperty("membership", membership);
-        newUser.addProperty("emergency_contact_one", emergency1);
-        newUser.addProperty("emergency_contact_two", emergency2);
-        newUser.addProperty("emergency_contact_three", emergency3);
-
+        newUser.addProperty("email", email);
         mTableAccounts.insert(newUser, callback);
     }
 
@@ -222,7 +231,7 @@ public class AuthService extends Activity {
         mClient.logout();
         //Take the user back to the auth activity to relogin if requested
         if (shouldRedirectToLogin) {
-            Intent logoutIntent = new Intent(mContext, AuthenticationActivity.class);
+            Intent logoutIntent = new Intent(mContext, CoverPage.class);
             logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(logoutIntent);
         }
@@ -282,55 +291,4 @@ public class AuthService extends Activity {
             return resultFuture;
         }
     }
-
-
-
-    /*private class MyServiceFilter implements ServiceFilter {
-        @Override
-        public ListenableFuture<ServiceFilterResponse> handleRequest(final ServiceFilterRequest request, final NextServiceFilterCallback nextServiceFilterCallback) {
-
-            nextServiceFilterCallback.onNext(request, new ServiceFilterResponseCallback() {
-                @Override
-                public void onResponse(ServiceFilterResponse response, Exception exception) {
-                    StatusLine status = response.getStatus();
-                    int statusCode = status.getStatusCode();
-
-                    if (statusCode == 401) {
-                        final CountDownLatch latch = new CountDownLatch(1);
-                        //Get the current activity for the context so we can show the login dialog
-                        AuthenticationApplication myApp = (AuthenticationApplication) mContext;
-                        Activity currentActivity = myApp.getCurrentActivity();
-                        mClient.setContext(currentActivity);
-                        currentActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mClient.login(mProvider, new UserAuthenticationCallback() {
-                                    @Override
-                                    public void onCompleted(MobileServiceUser user, Exception exception,
-                                                            ServiceFilterResponse response) {
-                                        if (exception == null) {
-                                            //Update the request object
-                                            latch.countDown();
-                                        } else {
-                                            Log.e(TAG, "User did not login successfully after 401");
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                        try {
-                            latch.await();
-                        } catch (InterruptedException e) {
-                            Log.e(TAG, "Interrupted exception: " + e.getMessage());
-                            return;
-                        }
-                        //nextServiceFilterCallback.onNext(request, nextServiceFilterCallbac);
-                        nextServiceFilterCallback.onNext(request);
-                    } else {
-                        responseCallback.onResponse(response, exception);
-                    }
-                }
-            });
-        }
-    }*/
 }

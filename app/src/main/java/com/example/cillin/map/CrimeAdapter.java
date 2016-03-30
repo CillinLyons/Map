@@ -45,12 +45,7 @@ public class CrimeAdapter extends ArrayAdapter<Crime>
         }
 
         row.setTag(currentItem);
-
-        final TextView username = (TextView) row.findViewById(R.id.DBusername);
-        final TextView membership = (TextView) row.findViewById(R.id.DBmembership);
-        final TextView area = (TextView) row.findViewById(R.id.DBarea);
-        final TextView message = (TextView) row.findViewById(R.id.DBmessage);
-        final TextView dateVar = (TextView) row.findViewById(R.id.textViewDate);
+        final TextView number = (TextView) row.findViewById(R.id.textView2);
         //final TextView id = (TextView) row.findViewById(R.id.textID);
 
        /* username.setText(currentItem.getUsername());

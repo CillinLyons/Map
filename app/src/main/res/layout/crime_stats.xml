@@ -1,64 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <RelativeLayout android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="40dp">
+    android:layout_height="match_parent" android:background="#89abe3">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="35sp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:text=""
             android:id="@+id/crime_stats_location"
-            android:layout_gravity="center_vertical"
+            android:textSize="40dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textColor="#ffdd00"
+            android:textStyle="bold"
+            android:layout_marginTop="35dp"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
 
-    </RelativeLayout>
-
-    <RelativeLayout android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="70dp"
-            android:id="@+id/CountyimageView3"
-            android:layout_gravity="center_vertical"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text=""
-        android:id="@+id/stats_location"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="90dp"
+        android:id="@+id/CountyimageView3"
+        android:layout_gravity="center_vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/crime_stats_location" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Total"
+        android:textColor="#FFFFFF"
+        android:text="@string/total"
         android:id="@+id/totaltextView"
-        android:layout_below="@+id/stats_location"
+        android:layout_below="@+id/CountyimageView3"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Assault:"
         android:id="@+id/assaulttextView"
         android:layout_below="@+id/totaltextView"
@@ -68,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Burglary:"
         android:id="@+id/burglarytextView"
         android:layout_below="@+id/assaulttextView"
@@ -77,6 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Criminal Damage:"
         android:id="@+id/criminalDamagetextView"
         android:layout_below="@+id/burglarytextView"
@@ -86,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Theft:"
         android:id="@+id/textView5"
         android:layout_below="@+id/criminalDamagetextView"
@@ -95,7 +80,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Most Popular"
+        android:textColor="#FFFFFF"
+        android:text="@string/mostPop"
         android:id="@+id/MostPoptextView"
         android:layout_below="@+id/textView5"
         android:layout_alignParentStart="true" />
@@ -104,6 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Crime:"
         android:id="@+id/crimetextView"
         android:layout_below="@+id/MostPoptextView"
@@ -113,7 +100,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Area:"
+        android:textColor="#FFFFFF"
+        android:text="Neighborhood:"
         android:id="@+id/areatextView"
         android:layout_below="@+id/crimetextView"
         android:layout_alignParentStart="true" />
@@ -122,6 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Time:"
         android:id="@+id/timetextView"
         android:layout_below="@+id/areatextView"
@@ -131,7 +120,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Least Popular"
+        android:textColor="#FFFFFF"
+        android:text="@string/leastPop"
         android:id="@+id/LeastPoptextView"
         android:layout_below="@+id/timetextView"
         android:layout_alignParentStart="true" />
@@ -140,6 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Crime:"
         android:id="@+id/crimetextView2"
         android:layout_below="@+id/LeastPoptextView"
@@ -149,7 +140,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Area:"
+        android:textColor="#FFFFFF"
+        android:text="Neighborhood:"
         android:id="@+id/areatextView2"
         android:layout_below="@+id/crimetextView2"
         android:layout_alignParentStart="true" />
@@ -158,6 +150,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:text="Time:"
         android:id="@+id/timetextView2"
         android:layout_below="@+id/areatextView2"
@@ -167,6 +160,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/AssaultInputtextView"
         android:layout_above="@+id/burglarytextView"
         android:layout_toEndOf="@+id/burglarytextView" />
@@ -175,6 +169,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/BurglaryInputtextView"
         android:layout_above="@+id/criminalDamagetextView"
         android:layout_toEndOf="@+id/burglarytextView" />
@@ -183,6 +178,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/CrimeInputtextView"
         android:layout_alignBottom="@+id/criminalDamagetextView"
         android:layout_toEndOf="@+id/criminalDamagetextView" />
@@ -191,57 +187,63 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/TheftInputtextView"
         android:layout_above="@+id/MostPoptextView"
         android:layout_toEndOf="@+id/crimetextView" />
 
     <TextView
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/CrimeInput2textView"
         android:layout_below="@+id/MostPoptextView"
         android:layout_toEndOf="@+id/crimetextView" />
 
     <TextView
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/AreaInputtextView"
         android:layout_above="@+id/timetextView"
         android:layout_toEndOf="@+id/areatextView" />
 
     <TextView
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/TimeInput1textView"
         android:layout_above="@+id/LeastPoptextView"
         android:layout_toEndOf="@+id/totaltextView" />
 
     <TextView
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/CrimeInput3textView"
         android:layout_below="@+id/LeastPoptextView"
         android:layout_toEndOf="@+id/crimetextView2" />
 
     <TextView
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/AreaInput2textView"
-        android:layout_above="@+id/timetextView2"
-        android:layout_toEndOf="@+id/textView5" />
+        android:layout_below="@+id/CrimeInput3textView"
+        android:layout_toEndOf="@+id/areatextView2" />
 
     <TextView
-        android:layout_width="50dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
         android:id="@+id/TimeInput2textView"
         android:layout_below="@+id/AreaInput2textView"
         android:layout_toEndOf="@+id/crimetextView2" />
-        </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

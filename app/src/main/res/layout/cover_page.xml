@@ -2,39 +2,71 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="#89abe3">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:id="@+id/coverImage"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Neighborhood Watch"
+        android:id="@+id/Logo"
+        android:textSize="40dp"
         android:layout_gravity="center_horizontal"
-        android:src="@mipmap/neighbourhoodwatch"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:textColor="#ffdd00"
+        android:textStyle="bold"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Garda Login"
+        android:id="@+id/gardaSignIn"
+        android:textSize="30dp"
+        android:onClick="gardaLoginClickListener"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_below="@+id/Logo"
+        android:textColor="#FFFFFF"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Garda Registration"
+        android:id="@+id/gardaRegistration"
+        android:textSize="30dp"
+        android:onClick="gardaRegisterClickListener"
+        android:layout_below="@+id/gardaSignIn"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:textColor="#FFFFFF"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign In"
-            android:id="@+id/signin1"
-            android:textSize="40dp"
-            android:onClick="loginClickListener"
+            android:text="User Login"
+            android:id="@+id/memberSignIn"
+            android:textSize="30dp"
+            android:onClick="memberLoginClickListener"
             android:layout_gravity="center_horizontal"
-            android:layout_below="@+id/coverImage"
-            android:layout_centerHorizontal="true" />
+            android:layout_below="@+id/gardaRegistration"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:textColor="#FFFFFF"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:text="User Register"
             android:id="@+id/register1"
-            android:textSize="40dp"
+            android:textSize="30dp"
             android:onClick="registerClickListener"
             android:layout_gravity="center_horizontal"
-            android:layout_below="@+id/signin1"
+            android:layout_below="@+id/memberSignIn"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dp" />
+            android:layout_marginTop="40dp"
+            android:textColor="#FFFFFF"/>
 
 </RelativeLayout>

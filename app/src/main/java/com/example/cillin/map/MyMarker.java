@@ -1,13 +1,12 @@
 package com.example.cillin.map;
 
-import com.example.cillin.map.clustering.ClusterItem;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Cillin on 14/10/2015.
  */
 
-public class MyMarker implements ClusterItem {
+public class MyMarker {
     private String mLabel;
     private String mIcon;
     private Double mLatitude;
@@ -24,7 +23,7 @@ public class MyMarker implements ClusterItem {
     }
 
     //mPosition = LatLng(mLatitude, mLongitude);
-    @Override
+    //@Override
     public LatLng getPosition() {
         return mPosition;
     }

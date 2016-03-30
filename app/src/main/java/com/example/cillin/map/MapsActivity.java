@@ -2,58 +2,70 @@ package com.example.cillin.map;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Canvas;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cillin.map.clustering.ClusterManager;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.android.gms.maps.SupportMapFragment;
-import android.support.v4.app.FragmentActivity;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.MobileServiceList;
+import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
+import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.TableJsonQueryCallback;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.example.cillin.map.clustering.ClusterManager;
-import com.google.android.gms.plus.model.people.Person;
+
 
 public class MapsActivity extends Activity
 {
+    private final String TAG = "MapsActivity";
     private GoogleMap mMap;
     private ArrayList<MyMarker> mMyMarkersArray = new ArrayList<MyMarker>();
     private HashMap<Marker, MyMarker> mMarkersHashMap;
-    private static final float DEFAULTZOOM = 150;
     private TextView anotherLabel;
-    private ClusterManager<MyMarker> mClusterManager;
+    private String mCounty;
+    private String mUserRegEmail;
+    private String mUserLoginEmail;
+    private String mGardaRegEmail;
+    private String mGardaLoginEmail;
+    private String neighborhood;
+    private Activity mActivity;
+
+    private MobileServiceTable<Accounts> mToDoTable;
+    private MobileServiceClient mClient;
+    private ProgressBar mProgressBar;
+    private LatLng latlng;
+    private int county_zoom;
+
+    private final DialogBox dialogBox = new DialogBox();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,29 @@ public class MapsActivity extends Activity
         setContentView(R.layout.activity_maps);
 
         anotherLabel = (TextView) findViewById(R.id.another_label);
+
+        mActivity = this;
+
+        try {
+            // Create the Mobile Service Client instance, using the provided
+
+            // Mobile Service URL and key
+            mClient = new MobileServiceClient(
+                    "https://neighborhoods.azure-mobile.net/",
+                    "YTRhlThmenNFYxgZerBkRixBZMQpCY37",
+                    this).withFilter(new ProgressFilter());
+
+
+            mToDoTable = mClient.getTable(Accounts.class);
+
+
+        } catch (MalformedURLException e) {
+        } catch (Exception e) {
+            dialogBox.NoConnection(mActivity);
+            Intent login = new Intent(mActivity, CoverPage.class);
+            startActivity(login);
+        }
+
        /* final MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
         final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.map_relative_layout);
         mMap = mapFragment.getMap();
@@ -300,20 +335,211 @@ public class MapsActivity extends Activity
         });
 
         mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter());*/
+        //plotMarkers(mMyMarkersArray);
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(53.2734, -7.778320310000026), 6));
         //mClusterManager = new ClusterManager<MyMarker>(this, mMap);
         //mMap.setOnCameraChangeListener(mClusterManager);
-        plotMarkers(mMyMarkersArray);
-        //mClusterManager = new ClusterManager<MyMarker>(this, mMap);
-        //mMap.setOnCameraChangeListener(mClusterManager);
-        //mClusterManager.addItems(mMyMarkersArray);
+        //mMap.setOnMarkerClickListener(mClusterManager);
+
+        NBHAuthenticationApplication myApp = (NBHAuthenticationApplication) getApplication();
+        NBHAuthService authService = myApp.getNBHAuthService();
+        final AuthService mAuthService = new AuthService(mActivity);
+        final NBHAuthService mNBHAuthService = new NBHAuthService(mActivity);
+
+        //Fetch auth data (the username) on load
+        authService.getNBHAuthData(new TableJsonQueryCallback() {
+            @Override
+            public void onCompleted(JsonElement result, Exception exception,
+                                    ServiceFilterResponse response) {
+                if (exception == null) {
+                    JsonArray results = result.getAsJsonArray();
+                    JsonElement item = results.get(0);
+                    neighborhood = item.getAsJsonObject().getAsJsonPrimitive("UserName").getAsString();
+                    getCounty();
+
+                } else {
+                    dialogBox.NotLoggedIn(mActivity);
+                    mAuthService.logout(true);
+                    mNBHAuthService.logout(true);
+                }
+            }
+        });
+
+    }
+
+    public void getCounty()
+    {
+        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    final MobileServiceList<Accounts> result = mToDoTable.where().field("username").eq(neighborhood).execute().get();
+
+                    final String test=  result.toString();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCounty = test;
+                            plotMarkers(mMyMarkersArray);
+                        }
+                    });
+
+                }
+                catch (Exception exception)
+                {
+                    dialogBox.NotLoggedIn(mActivity);
+                }
+                return null;
+            }
+        }.execute();
     }
 
     private void plotMarkers(ArrayList<MyMarker> markers)
     {
         if(markers.size() > 0)
         {
-            for (final MyMarker myMarker : markers) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(53.2734, -7.778320310000026), 6));
+            for (final MyMarker myMarker : markers)
+            {
+                LatLng kildare = new LatLng(53.158934, -6.909568);
+                LatLng dublin = new LatLng(53.349805, -6.26031);
+                LatLng donegal = new LatLng(54.826008, -7.896423);
+                LatLng kerry = new LatLng(52.154461, -9.566863);
+                LatLng carlow = new LatLng(52.718975, -6.85037);
+                LatLng wexford = new LatLng(52.333871, -6.483479);
+                LatLng waterford = new LatLng(52.259320, -7.11007);
+                LatLng westmeath = new LatLng(53.533778, -7.318268);
+                LatLng galway = new LatLng(53.192870, -8.632507);
+                LatLng leitrim = new LatLng(54.101281, -7.963715);
+                LatLng limerick = new LatLng(52.492815, -8.764343);
+                LatLng kilkenny = new LatLng(52.654145, -7.244788);
+                LatLng cork = new LatLng(51.984880, -8.583069);
+                LatLng wicklow = new LatLng(52.998256, -6.341858);
+                LatLng meath = new LatLng(53.605548, -6.656417);
+                LatLng longford = new LatLng(53.698333, -7.705536);
+                LatLng mayo = new LatLng(53.810382, -9.242249);
+                LatLng laois = new LatLng(52.960221, -7.326508);
+                LatLng tipperary = new LatLng(52.604716, -7.851105);
+                LatLng clare = new LatLng(52.816043, -8.912659);
+                LatLng monaghan = new LatLng(54.133478, -6.896667);
+                LatLng cavan = new LatLng(53.989719, -7.363332);
+                LatLng roscommon = new LatLng(53.680442, -8.194427);
+                LatLng offaly = new LatLng(53.184642, -7.741241);
+                LatLng louth = new LatLng(53.896976, -6.467097);
+                LatLng sligo = new LatLng(54.130260, -8.548737);
+                LatLng ireland = new LatLng(53.412910, -8.24389);
+
+                if (mCounty.contains("Cork"))
+                {
+                    latlng = cork;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Dublin"))
+                {
+                    latlng = dublin;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Kildare")) {
+                    latlng = kildare;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Kilkenny")) {
+                    latlng = kilkenny;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Meath")) {
+                    latlng = meath;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Mayo")) {
+                    latlng = mayo;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Monaghan")) {
+                    latlng = monaghan;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Leitrim")) {
+                    latlng = leitrim;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Limerick")) {
+                    latlng = limerick;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Sligo")) {
+                    latlng = sligo;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Wicklow")) {
+                    latlng = wicklow;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Wexford")) {
+                    latlng = wexford;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Westmeath")) {
+                    latlng = westmeath;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Waterford")) {
+                    latlng = waterford;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Galway")) {
+                    latlng = galway;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Offaly")) {
+                    latlng = offaly;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Donegal")) {
+                    latlng = donegal;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Carlow")) {
+                    latlng = carlow;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Cavan")) {
+                    latlng = cavan;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Clare")) {
+                    latlng = clare;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Laois")) {
+                    latlng = laois;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Longford")) {
+                    latlng = longford;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Louth")) {
+                    latlng = louth;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Roscommon")) {
+                    latlng = roscommon;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Kerry")) {
+                    latlng = kerry;
+                    county_zoom = 8;
+                }
+                else if(mCounty.contains("Tipperary")) {
+                    latlng = tipperary;
+                    county_zoom = 8;
+                }
+                else {
+                    latlng = ireland;
+                    county_zoom = 6;
+                }
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom((latlng), county_zoom));
                 // Create user marker with custom icon and other options
                 //Calls the lat and long methods to set the longitude and latitude positions of the markers passed in
                 MarkerOptions markerOption = new MarkerOptions().position(new LatLng(myMarker.getmLatitude(), myMarker.getmLongitude()));
@@ -322,29 +548,7 @@ public class MapsActivity extends Activity
                 Marker currentMarker = mMap.addMarker(markerOption);
                 //Passes markers into hashmap so they can be used by the information window methods
                 mMarkersHashMap.put(currentMarker, myMarker);
-               /* var markerCluster = new MarkerC
-                mMarkersHashMap.put(currentMarker, myMarker);
-
-                mAnimHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        myMarker.setmIcon(mSteamFrames.NextFrame());
-                        mAnimHandler.postDelayed(this, 32);
-                    }
-                });
-
-                ColorMatrix desatMatrix = new ColorMatrix();
-                desatMatrix.setSaturation(areaRating);
-
-                ColorFilter paintColorFilter = new ColorMatrixColorFilter(desatMatrix);
-
-                Paint paint = new Paint();
-                paint.setColorFilter(paintColorFilter);
-
-                Canvas canvas = new Canvas(newImage);
-                canvas.drawBitmap(oldImage, 0, 0, paint);
-
-                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.fromBitmap(newImage)));*/
+                //currentMarker.setVisible(false);
 
                 mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
@@ -359,7 +563,9 @@ public class MapsActivity extends Activity
 
                 mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter());
             }
+
         }
+        //mClusterManager.addItems(markers);
     }
 
 
@@ -371,36 +577,6 @@ public class MapsActivity extends Activity
         LatLng ll = new LatLng(lat, lng);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(ll, zoom);
         mMap.moveCamera(update);
-    }
-
-   /* public void geoLocate(View v) throws IOException
-    {
-        hideSoftKeyBoard(v);
-
-        EditText et = (EditText) findViewById(R.id.edittext1);
-        String location = et.getText().toString();
-
-        Geocoder gc = new Geocoder(this);
-        List<Address> list = gc.getFromLocationName(location, 1);
-        Address add = list.get(0);
-        String locality = add.getLocality();
-        Toast.makeText(this, locality, Toast.LENGTH_LONG).show();
-
-        double lat = add.getLatitude();
-        double lng = add.getLongitude();
-        mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Marker"));
-        mMyMarkersArray.add(new MyMarker("Marker", "icon1", lng, lat));
-
-        gotoLocation(lat, lng, DEFAULTZOOM);
-        mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)).title("Marker"));
-        mMyMarkersArray.add(new MyMarker("Marker", "icon1", lng, lat));
-        plotMarkers(mMyMarkersArray);
-    }*/
-
-    private void hideSoftKeyBoard(View v)
-    {
-        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
     }
 
 
@@ -420,7 +596,12 @@ public class MapsActivity extends Activity
     //Use to insert county flags into each information window
     private int manageMarkerIcon(String markerIcon)
     {
-        if (markerIcon.equals("Dublin"))
+        if (markerIcon.equals("Dublin") || markerIcon.equals("D1") || markerIcon.equals("D2") || markerIcon.equals("D3") ||
+                markerIcon.equals("D4") || markerIcon.equals("D5") || markerIcon.equals("D6") || markerIcon.equals("D7") ||
+                markerIcon.equals("D8") || markerIcon.equals("D9") || markerIcon.equals("D10") || markerIcon.equals("D11") ||
+                markerIcon.equals("D12") || markerIcon.equals("D13") || markerIcon.equals("D14") || markerIcon.equals("D15") ||
+                markerIcon.equals("D16") || markerIcon.equals("D17") || markerIcon.equals("D18") || markerIcon.equals("D19") ||
+                markerIcon.equals("D20") || markerIcon.equals("D22") || markerIcon.equals("D24"))
             return R.mipmap.dublin;
         else if(markerIcon.equals("Kildare"))
             return R.mipmap.kildare;
@@ -520,23 +701,21 @@ public class MapsActivity extends Activity
         @Override
         public View getInfoContents(Marker marker)
         {
-            View v  = getLayoutInflater().inflate(R.layout.infowindow_layout, null);
 
+            View v  = getLayoutInflater().inflate(R.layout.infowindow_layout, null);
             MyMarker myMarker = mMarkersHashMap.get(marker);
-           //MyMarker myMarker = mMyMarkersArray;
+            //MyMarker mymarker = new MyMarker(marker);
 
             ImageView markerIcon = (ImageView) v.findViewById(R.id.marker_icon);
-
             TextView markerLabel = (TextView)v.findViewById(R.id.marker_label);
-
             TextView anotherLabel = (TextView)v.findViewById(R.id.another_label);
-            //anotherLabel.setOnClickListener(newsfeed);
 
             markerIcon.setImageResource(manageMarkerIcon(myMarker.getmIcon()));
-            anotherLabel.setText("Newsfeed");
+            anotherLabel.setText("Tap here for information");
             markerLabel.setText(myMarker.getmLabel());
 
             return v;
+
         }
     }
         /*View.OnClickListener newsfeed = new View.OnClickListener()
@@ -555,5 +734,47 @@ public class MapsActivity extends Activity
                 startActivity(intent1);
             }
         })*/
+
+    private class ProgressFilter implements ServiceFilter {
+
+        @Override
+        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
+
+            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
+
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.VISIBLE);
+                }
+            });
+
+            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
+
+            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
+                @Override
+                public void onFailure(Throwable e) {
+                    resultFuture.setException(e);
+                }
+
+                @Override
+                public void onSuccess(ServiceFilterResponse response) {
+                    runOnUiThread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (mProgressBar != null) mProgressBar.setVisibility(ProgressBar.GONE);
+                        }
+                    });
+
+                    resultFuture.set(response);
+                }
+            });
+
+            return resultFuture;
+        }
+    }
 
 }

@@ -132,7 +132,7 @@ public class NewsfeedInput extends  Activity
         final NewsfeedItems crime = new NewsfeedItems();
 
 
-
+        String kildare = "Kildare South";
         crime.setUsername(mUsername.getText().toString());
         crime.setMembership(mMembership.getText().toString());
         crime.setArea(mArea.getText().toString());
@@ -141,7 +141,7 @@ public class NewsfeedInput extends  Activity
         Date date = new Date();
         dateFormat.format(date);
         crime.setDate(date);
-        crime.setLocation(county);
+        crime.setLocation(kildare);
 
 
         // Insert the new item

@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" android:background="#89abe3"
+    android:weightSum="1">
 
-    <RelativeLayout android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="40dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="35sp"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text=""
-            android:id="@+id/list_location"
-            android:layout_gravity="center_vertical"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
-
-    <RelativeLayout android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="50dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/list_location"
+        android:textSize="40sp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="#ffdd00"
+        android:textStyle="bold"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="70dp"
+            android:layout_width="140dp"
+            android:layout_height="90dp"
             android:id="@+id/CountyimageView2"
             android:layout_gravity="center_vertical"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_above="@+id/infowindow_menu"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/list_location" />
 
-    </RelativeLayout>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="344dp"
         android:id="@+id/infowindow_menu"
         android:layout_gravity="center_horizontal"
-        android:choiceMode="multipleChoice" />
-</LinearLayout>
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:choiceMode="multipleChoice"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>

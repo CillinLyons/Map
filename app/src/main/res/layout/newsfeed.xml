@@ -1,50 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" android:focusableInTouchMode="true"
+    android:fitsSystemWindows="true" android:background="#89abe3">
 
-    <LinearLayout android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="50dp">
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:textSize="35sp"
-            android:id="@+id/newsfeed_location"
-            android:layout_gravity="center_vertical" />
-    </LinearLayout>
-
-
-    <LinearLayout android:orientation="vertical" android:layout_width="100dp"
-        android:layout_height="70dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/newsfeed_location"
+        android:textSize="40sp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:textColor="#ffdd00"
+        android:textStyle="bold"
+        android:layout_marginTop="35dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="70dp"
+            android:layout_width="110dp"
+            android:layout_height="90dp"
             android:id="@+id/CountyimageView"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+            android:gravity="center"
+            android:layout_below="@+id/newsfeed_location"
+            android:layout_centerHorizontal="true" />
 
-        <LinearLayout
-            android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:id="@+id/linearLayout">
-                    <ListView
-                        android:layout_width="match_parent"
-                        android:layout_height="359dp"
-                        android:id="@+id/listViewDB" />
-        </LinearLayout>
-
-
-    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="50dp">
+    <RelativeLayout android:orientation="horizontal" android:layout_width="match_parent"
+        android:layout_height="50dp" android:layout_gravity="center_vertical" android:layout_alignParentBottom="true"
+        android:id="@+id/relativeLayout">
         <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
             android:id="@+id/Message"
-            android:layout_gravity="center_vertical" />
+            android:textColorHint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:hint="Enter Newsfeed Updates Here"
+            android:layout_toStartOf="@+id/messageBtn">
+        </EditText>
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/messageBtn" />
-    </LinearLayout>
+            android:src="@mipmap/message_btn"
+            android:id="@+id/messageBtn"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
 
-</LinearLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="109dp"
+        android:id="@+id/listViewDB"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/CountyimageView" />
+
+</RelativeLayout>

@@ -15,70 +15,118 @@ import com.microsoft.windowsazure.mobileservices.authentication.MobileServiceUse
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.UserAuthenticationCallback;
 
-
 /**
- * Created by Cillin on 29/01/2016.
+ * Cover page is the first page of the app, hence the name.
+ * This page provides the options garda login and registration
+ * and user login and registration.
  */
 public class CoverPage extends BaseActivity
 {
-    private TextView mLogin;
-    private TextView mRegister;
+    /**
+     * Variables for the TextViews on the xml page
+     */
+    private TextView mGardaLogin;
+    private TextView mMemberLogin;
+    private TextView mUserRegister;
+    private  TextView mGardaRegister;
+
+    /**
+     * Variable for the current activity
+     */
     private Activity mActivity;
+
+    /**
+     * Variable for this activities name
+     */
     private final String TAG = "CoverPage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        /**
+         * Linking this class to the XML layout cover_page
+         */
         setContentView(R.layout.cover_page);
 
-        mLogin = (TextView) findViewById(R.id.signin1);
-        mRegister = (TextView) findViewById(R.id.register1);
+        /**
+         * Assigning the TextView variables to the appropriate XML Textviews
+         */
+        mGardaLogin = (TextView) findViewById(R.id.gardaSignIn);
+        mMemberLogin = (TextView) findViewById(R.id.memberSignIn);
+        mUserRegister = (TextView) findViewById(R.id.register1);
+        mGardaRegister = (TextView) findViewById(R.id.gardaRegistration);
+
+        /**
+         * Assigning the current asctivity to the activity variable
+         */
         mActivity = this;
 
-        mLogin.setOnClickListener(loginClickListener);
-        mRegister.setOnClickListener(registerClickListener);
+        /**
+         * Setting onClickListeners to the TextViews to allow the user to go
+         * to their desired page
+         */
+        mGardaLogin.setOnClickListener(gardaLoginClickListener);
+        mMemberLogin.setOnClickListener(memberLoginClickListener);
+        mUserRegister.setOnClickListener(registerClickListener);
+        mGardaRegister.setOnClickListener(gardaRegisterClickListener);
 
         //If user is already authenticated, bypass logging in
-        if (mAuthService.isUserAuthenticated())
+        /*if (mAuthService.isUserAuthenticated())
         {
-            Intent loggedInIntent = new Intent(mActivity, MainMenu.class);
+            Intent loggedInIntent = new Intent(mActivity, WelcomePage.class);
             startActivity(loggedInIntent);
-        }
-
-        /*mLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent customLoginIntent = new Intent(getApplicationContext(), CustomLoginActivity.class);
-                startActivity(customLoginIntent);
-            }
-        });
-
-        mRegister.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent customLoginIntent = new Intent(getApplicationContext(), RegisterAccountActivity.class);
-                startActivity(customLoginIntent);
-            }
-        });*/
+        }*/
     }
 
-   View.OnClickListener loginClickListener = new View.OnClickListener()
+    /**
+     * Setting an intent that will take the user to the garda login page
+     */
+    View.OnClickListener gardaLoginClickListener = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)
         {
-            Intent loginIntent = new Intent(getApplicationContext(), CustomLoginActivity.class);
+            Intent loginIntent = new Intent(mActivity, GardaLoginActivity.class);
             startActivity(loginIntent);
         }
     };
 
+    /**
+     * Setting an intent that will take the user to the member login page
+     */
+   View.OnClickListener memberLoginClickListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            Intent loginIntent = new Intent(mActivity, CustomLoginActivity.class);
+            startActivity(loginIntent);
+        }
+    };
+
+    /**
+     * Setting an intent that will take the user to the member registration page
+     */
     View.OnClickListener registerClickListener = new View.OnClickListener()
     {
         @Override
         public void onClick(View v)
         {
-            Intent registerIntent = new Intent(getApplicationContext(), RegisterAccountActivity.class);
+            Intent registerIntent = new Intent(mActivity, RegisterAccountActivity.class);
+            startActivity(registerIntent);
+        }
+    };
+
+    /**
+     * Setting an intent that will take the user to the garda registration page
+     */
+    View.OnClickListener gardaRegisterClickListener = new View.OnClickListener()
+    {
+        @Override
+        public void onClick(View v)
+        {
+            Intent registerIntent = new Intent(mActivity, GardaRegister.class);
             startActivity(registerIntent);
         }
     };

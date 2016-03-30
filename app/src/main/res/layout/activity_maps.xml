@@ -13,29 +13,4 @@
         tools:context=".MapsActivity"
         android:name="com.google.android.gms.maps.MapFragment"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/textview1"
-        android:layout_gravity="left"
-        android:text="Location:"
-        android:textSize="15sp"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:layout_gravity="right"
-        android:text="Go"
-        android:onClick="geoLocate"/>
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/edittext1"
-        android:layout_gravity="center_horizontal|top"
-        android:ems="10">
-        <requestFocus />
-
-        </EditText>
 </FrameLayout>

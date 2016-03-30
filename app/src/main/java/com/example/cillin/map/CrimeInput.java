@@ -2,6 +2,8 @@ package com.example.cillin.map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -11,11 +13,16 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.support.v4.app.DialogFragment;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.common.util.concurrent.FutureCallback;
@@ -63,9 +70,18 @@ public class CrimeInput extends  Activity
     private EditText neighborhood;
     private String county;
     private Spinner timeSpinnerVar;
-    //private DatePicker datePickerVar;
+    private DatePicker datePickerVar;
     private EditText dateTextVar;
     private Activity mActivity;
+    private Date date;
+    private Button dateButton;
+    private TextView mLocation;
+    private int day, month, year;
+    static final int DIALOG_ID = 0;
+    private String theDate;
+    private ImageView mIcon;
+
+    final DialogBox dialogBox = new DialogBox();
 
 
     /**
@@ -80,11 +96,6 @@ public class CrimeInput extends  Activity
 
         mActivity = this;
 
-        //mProgressBar = (ProgressBar) findViewById(R.id.loadingProgressBar);
-
-        // Initialize the progress bar
-        //mProgressBar.setVisibility(ProgressBar.GONE);
-
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -95,6 +106,11 @@ public class CrimeInput extends  Activity
         } else {
             county= (String) savedInstanceState.getSerializable("COUNTY");
         }
+
+        mIcon = (ImageView) findViewById(R.id.CountyimageView4);
+        ChangeIcon.setIcon(county, mIcon);
+        mLocation = (TextView) findViewById(R.id.crime_input_location);
+        mLocation.setText(county);
 
         try {
             // Create the Mobile Service Client instance, using the provided
@@ -108,11 +124,8 @@ public class CrimeInput extends  Activity
             // Get the Mobile Service Table instance to use
             mToDoTable = mClient.getTable(Crime.class);
 
-
             //Init local storage
             initLocalStore().get();
-
-
         }
         catch (MalformedURLException e) {
             createAndShowDialog(new Exception("There was an error creating the Mobile Service. Verify the URL"), "Error");
@@ -121,109 +134,135 @@ public class CrimeInput extends  Activity
             createAndShowDialog(e, "Error");
         }
 
+        final Calendar cal = Calendar.getInstance();
+
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+
         crimeSpinnerVar = (Spinner) findViewById(R.id.crimeSpinner);
         timeSpinnerVar = (Spinner) findViewById(R.id.timeSpinner);
-        dateTextVar = (EditText) findViewById(R.id.dateText);
+        //datePickerVar = (DatePicker) findViewById(R.id.datePicker);
         neighborhood = (EditText) findViewById(R.id.neighborhoodText);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> crime_adapter = ArrayAdapter.createFromResource(this,
-                R.array.crime_array, android.R.layout.simple_spinner_item);
+                R.array.crime_array, R.layout.spinner_item);
         // Specify the layout to use when the list of choices appears
-        crime_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        crime_adapter.setDropDownViewResource(R.layout.spinner_item);
         // Apply the adapter to the spinner
         crimeSpinnerVar.setAdapter(crime_adapter);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> time_adapter = ArrayAdapter.createFromResource(this,
-                R.array.time_array, android.R.layout.simple_spinner_item);
+                R.array.time_array, R.layout.spinner_item);
         // Specify the layout to use when the list of choices appears
-        time_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        time_adapter.setDropDownViewResource(R.layout.spinner_item);
         // Apply the adapter to the spinner
         timeSpinnerVar.setAdapter(time_adapter);
+
+        showDialogOnButtonClick();
     }
 
-    /**
-     * Add a new item
-     *
-     * @param view The view that originated the call
-     *
-     */
+    public void showDialogOnButtonClick()
+    {
+        dateButton = (Button) findViewById(R.id.btnDate);
 
-    /*public  void onDateSet(DatePicker view,int year,int monthOfYear, int dayOfMonth) {
-        dateTime.set(year,monthOfYear,dayOfMonth);
+        dateButton.setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        showDialog(DIALOG_ID);
+                    }
+                }
+        );
+    }
 
-        int Year = year;   // Here you can get day,month and year.
-        int month = monthOfYear;
-        int day = dayOfMonth;
+    @Override
+    protected Dialog onCreateDialog(int id)
+    {
+        if(id == DIALOG_ID)
+            return new DatePickerDialog(mActivity, pickListener, year, month, day);
+        return  null;
+    }
 
-        ContentValues values = new ContentValues();
-
-        values.put("Day",dayOfMonth);
-        values.put("Month",monthOfYear);
-        values.put("Year",year);
-
-    }*/
+    private DatePickerDialog.OnDateSetListener pickListener = new DatePickerDialog.OnDateSetListener()
+    {
+        @Override
+        public void onDateSet(DatePicker view, int theYear, int theMonth, int theDay)
+        {
+            year = theYear;
+            day = theDay;
+            month = theMonth + 1;
+            Toast date = Toast.makeText(mActivity, year+ "-" + month + "-" + day, Toast.LENGTH_SHORT);
+            date.show();
+            day = theDay+1;
+            theDate = year + "-" + month + "-" + day;
+        }
+    };
 
     public void addItem(View view) {
         if (mClient == null) {
             return;
         }
-
         // Create a new item
         final Crime crime = new Crime();
-
 
         crime.setCounty(county);
         crime.setNeighborhood(neighborhood.getText().toString());
         crime.setCrime(crimeSpinnerVar.getSelectedItem().toString());
         crime.setTime(timeSpinnerVar.getSelectedItem().toString());
-
-        try
-        {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/dd/MM");
-            //String dt = sdf.format(dateTextVar.getText().toString());
-            //String bluh = dateTextVar.getText().toString();
-            Date date = sdf.parse(dateTextVar.getText().toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            date = sdf.parse(theDate);
             crime.setDate(date);
+        } catch (Exception e) {
+
         }
-        catch (Exception e)
+        if (neighborhood.getText().toString().equals("") ||
+                crimeSpinnerVar.getSelectedItem().toString().equals("Select Crime") ||
+                timeSpinnerVar.getSelectedItem().toString().equals("Select Time"))
         {
-
+            dialogBox.emptyFields(mActivity);
         }
-
-
+        else
         // Insert the new item
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
+        {
+            AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params)
+                {
+                    try
+                    {
+                        final Crime entity = addItemInTable(crime);
 
-                    final Crime entity = addItemInTable(crime);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
                                 mToDoTable.insert(entity);
-                        }
-                    });
+                            }
+                        });
+                    } catch (final Exception e) {
+                        dialogBox.emptyFields(mActivity);
+                    }
+                    return null;
                 }
-                catch (final Exception e) {
-                    createAndShowDialogFromTask(e, "Error");
-                }
-                return null;
-            }
-        };
+            };
 
-        runAsyncTask(task);
-        crimeSpinnerVar.setSelection(0);
-        timeSpinnerVar.setSelection(0);
-        dateTextVar.setText("");
-        neighborhood.setText("");
-        mActivity.finish();
-        Intent firstActivity = new Intent(mActivity, InfoWindowList.class);
-        firstActivity.putExtra("COUNTY", county);
-        startActivity(firstActivity);
+
+            runAsyncTask(task);
+            crimeSpinnerVar.setSelection(0);
+            timeSpinnerVar.setSelection(0);
+            //dateTextVar.setText("");
+            neighborhood.setText("");
+            mActivity.finish();
+            Intent firstActivity = new Intent(mActivity, InfoWindowList.class);
+            String countyString = "Kildare South";
+            firstActivity.putExtra("COUNTY", countyString);
+            startActivity(firstActivity);
+        }
 
     }
 
