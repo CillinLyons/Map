@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="#89abe3">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Registered Neighborhoods in"
+        android:id="@+id/textViewRegNBH"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffdd00"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/textViewRegCounty"
+        android:textColor="#ffdd00"
+        android:layout_below="@+id/textViewRegNBH"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_width="140dp"
+        android:layout_height="90dp"
+        android:id="@+id/CountyimageView5"
+        android:layout_gravity="center_vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/textViewRegCounty" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewNBH"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/CountyimageView5"/>
+</RelativeLayout>

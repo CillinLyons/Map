@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#89abe3">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Did You Know?"
+        android:id="@+id/textViewPage6"
+        android:textColor="#ffdd00"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_gravity="center_horizontal"
+        android:layout_above="@+id/textViewPage6.1"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:text="What attracts burglars:\n
+        \u2022 Open Windows.\n
+        \u2022 Unoccupied House.\n
+        \u2022 No Alarm.\n
+        \u2022 Poor lighting.\n"
+        android:id="@+id/textViewPage6.1"
+        android:textColor="#FFFFFF"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>

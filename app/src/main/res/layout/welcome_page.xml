@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="#89abe3">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Neighborhood Watch"
+        android:id="@+id/Logo"
+        android:textSize="40dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:textColor="#ffdd00"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#FFFFFF"
+        android:text="Welcome"
+        android:id="@+id/textViewWelcome"
+        android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/Logo"
+        android:layout_alignEnd="@+id/buttonWelcome" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewWelcome"
+        android:id="@+id/textViewUsername"
+        android:textColor="#FFFFFF"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:paddingBottom="20dp"
+        android:layout_alignEnd="@+id/textViewWelcome"
+        android:layout_alignStart="@+id/textViewWelcome" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tap on a markers information window to find out more about that areas neighborhood watch communities."
+        android:id="@+id/textViewWelcomeMesage"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:paddingBottom="50dp"
+        android:layout_below="@+id/imageViewWelcomePage"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="40dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go to map"
+        android:id="@+id/buttonWelcome"
+        android:background="#66c2ff"
+        android:textColor="#FFFFFF"
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp" />
+
+    <ImageView
+        android:layout_width="130dp"
+        android:layout_height="150dp"
+        android:icon="@mipmap/app_icon"
+        android:id="@+id/imageViewWelcomePage"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>
